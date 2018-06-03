@@ -1,17 +1,36 @@
-var myImage = document.querySelector('img');
+function TFromDate() {
+    var fromDate = document.getElementById("fromDate").value;
+    var toDate = document.getElementById("toDate").value;
+    var TodayDate = new Date();
+    var fromErr = document.getElementById("fromErr");
 
-myImage.onclick = function() {
-    var mySrc = myImage.getAttribute('src');
-    if(mySrc === 'images/1.jpg') {
-      myImage.setAttribute ('src','images/2.jpg');
-    } else {
-      myImage.setAttribute ('src','images/1.jpg');
+    if (new Date(fromDate).getTime() > TodayDate.getTime()) {
+          fromErr.innerHTML = "The Date must be Smaller or Equal to today date";
+          return false;
+     }
+    if(new Date(toDate).getTime() < new Date(fromDate).getTime()) {        
+          fromErr.innerHTML = "The Date must be Smaller or Equal to the to Date";
+          return false;
     }
+    fromErr.innerHTML = "";
+    return true;
 }
 
-var myButton = document.querySelector('button');
-var myResults = document.getElementById('results');
-//var myResults = document.querySelector('h1');
-myButton.onclick = function() {
-  myResults.textContent = 'None'
+function TToDate() {
+    var fromDate = document.getElementById("fromDate").value;
+    var toDate = document.getElementById("toDate").value;
+    var TodayDate = new Date();
+    var toErr = document.getElementById("toErr");
+
+    if (new Date(toDate).getTime() > TodayDate.getTime()) {
+          toErr.innerHTML = "The Date must be Smaller or Equal to today date";
+          return false;
+     }    
+    if(new Date(toDate).getTime() < new Date(fromDate).getTime()) {        
+          toErr.innerHTML = "The Date must be Bigger or Equal to the from Date";
+          return false;
+    }
+    toErr.innerHTML = ""        
+
+    return true;
 }

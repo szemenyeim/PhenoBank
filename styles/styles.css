@@ -40,5 +40,16 @@ p, li {
 }
 img {
   display: block;
-  margin: 0 auto;
+  margin: auto auto;
+}
+
+/* Clear floats after image containers */
+.row {
+  display: flex;
+}
+
+/* Three image containers (use 25% for four, and 50% for two, etc) */
+.column {
+  flex: 50%;
+  padding: 5px;
 }

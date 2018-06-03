@@ -14,6 +14,7 @@
     <title>PhenoBank</title>
   </head>
   <body>
+    <script src="scripts/main.js"></script>
       <header>
       <h1>PhenoBank</h1>          
       <h2>The phenotype database</h2>
@@ -34,11 +35,30 @@
        </form>
      </nav>
       
-      <!-- It contains an article -->
-      <article>
-      <h3>Welcome</h3>
-      <p>The PhenoBank aims to provide a comprehensive phanotype database for researchers. We hope you find it useful.</p>
-      </article>
+      <form action="/search" method="post">
+          <h3>Contact form</h3>
+      <div>
+        <label for="ID">ID:</label>
+        <input type="text" id="ID" name="ID">
+      </div>
+      <div>
+        <label for="species">Species:</label>
+        <input type="text" id="species" name="species">
+      </div>
+      <div>
+        <label for="fromDate">From:</label>
+        <input type="date" name="fromDate" id="fromDate" onchange="TFromDate()">
+        <label id="fromErr"></label>
+      </div>   
+      <div>
+        <label for="toDate">To:</label>
+        <input type="date" name="toDate" id="toDate" onchange="TToDate()">
+        <label id="toErr"></label>
+      </div>        
+      <div class="button">
+        <button type="submit">Search</button>
+      </div>
+    </form>
       
       <!-- the aside content can also be nested within the main content -->
       <aside>
