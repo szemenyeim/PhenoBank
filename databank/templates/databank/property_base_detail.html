@@ -1,0 +1,35 @@
+{% extends "base_generic.html" %}
+{% block content %}
+  <h1>Name: {{ property_base.name }}</h1>
+
+  <p><strong>Species:</strong> {{ property_base.species }}</p>
+  <p><strong>Type:</strong> {{ property_base.type }}</p>
+  {% if property_base.type == "F" %}
+    <p><strong>Max:</strong> {{ property_base.maxVal }}</p>
+    <p><strong>Min:</strong> {{ property_base.minVal }}</p>
+  {% elif property_base.type == "C" %}
+    <p><strong>Choices:</strong></p>
+    <ul>
+      {% for opt in property_base.options.all %}
+        <li>
+          {{ opt.name }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+    {% load mptt_tags %}
+    <ul>
+        {% recursetree property_base_list %}
+            <li>
+                <a href="{{ node.get_absolute_url }}">{{ node.name }}</a>
+                {% if not node.is_leaf_node %}
+                    <ul class="children">
+                        {{ children }}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endrecursetree %}
+    </ul>
+
+{% endblock %}

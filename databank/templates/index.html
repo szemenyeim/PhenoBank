@@ -1,0 +1,12 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>PhenoBank</h1>
+
+  <p>Welcome to <em>PhenoBank</em>, an online database for phenotypes.</p>
+
+<h2>Database:</h2>
+
+  <p>Our database currently has {{ num_phenomes }} phenomes of {{ num_species }} species measured at {{ num_locations }} locations.</p>
+
+{% endblock %}

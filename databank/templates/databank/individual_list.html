@@ -1,0 +1,19 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Individuals</h1>
+
+    {% if individual_list %}
+    <ul>
+
+      {% for individual in individual_list %}
+      <li>
+        <a href="{{ individual.get_absolute_url }}">{{ individual.ENAR }}</a> ({{individual.species}}) ({{individual.location}}) ({{individual.date}})
+      </li>
+      {% endfor %}
+
+    </ul>
+    {% else %}
+      <p>There are no individuals in the bank.</p>
+    {% endif %}       
+{% endblock %}

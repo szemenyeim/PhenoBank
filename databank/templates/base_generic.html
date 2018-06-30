@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  {% block title %}<title>PhenoBank</title>{% endblock %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+
+		.tree {
+            position: relative;
+            top: 23px;
+            right: 123px;
+		}
+        /*TREE*/
+		.tree ul {
+			padding-top: 20px; position: relative;
+
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+			transition: all 0.5s;
+		}
+
+		.tree li {
+			float: left; text-align: center;
+			list-style-type: none;
+			position: relative;
+			padding: 20px 5px 0 5px;
+
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+			transition: all 0.5s;
+		}
+
+		/*We will use ::before and ::after to draw the connectors*/
+
+		.tree li::before, .tree li::after{
+			content: '';
+			position: absolute; top: 0; right: 50%;
+			border-top: 1px solid #ccc;
+			width: 50%; height: 45px;
+			z-index: -1;
+		}
+		.tree li::after{
+			right: auto; left: 50%;
+			border-left: 1px solid #ccc;
+		}
+
+		/*We need to remove left-right connectors from elements without
+		any siblings*/
+		.tree li:only-child::after, .tree li:only-child::before {
+			display: none;
+		}
+
+		/*Remove space from the top of single children*/
+		.tree li:only-child{ padding-top: 0;}
+
+		/*Remove left connector from first child and
+		right connector from last child*/
+		.tree li:first-child::before, .tree li:last-child::after{
+			border: 0 none;
+		}
+		/*Adding back the vertical connector to the last nodes*/
+		.tree li:last-child::before{
+			border-right: 1px solid #ccc;
+			border-radius: 0 5px 0 0;
+
+			-webkit-transform: translateX(1px);
+			-moz-transform: translateX(1px);
+			transform: translateX(1px);
+
+			-webkit-border-radius: 0 5px 0 0;
+			-moz-border-radius: 0 5px 0 0;
+			border-radius: 0 5px 0 0;
+		}
+		.tree li:first-child::after{
+			border-radius: 5px 0 0 0;
+			-webkit-border-radius: 5px 0 0 0;
+			-moz-border-radius: 5px 0 0 0;
+		}
+
+		/*Time to add downward connectors from parents*/
+		.tree ul ul::before{
+			content: '';
+			position: absolute; top: -12px; left: 50%;
+			border-left: 1px solid #ccc;
+			width: 0; height: 32px;
+			z-index: -1;
+		}
+
+		.tree li a{
+			border: 1px solid #ccc;
+			padding: 5px 10px;
+			text-decoration: none;
+			color: #666;
+			font-family: arial, verdana, tahoma;
+			font-size: 11px;
+			display: inline-block;
+			background: white;
+
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+			transition: all 0.5s;
+		}
+		.tree li a+a {
+			margin-left: 20px;
+			position: relative;
+		}
+		.tree li a+a::before {
+			content: '';
+			position: absolute;
+			border-top: 1px solid #ccc;
+			top: 50%; left: -21px;
+			width: 20px;
+		}
+
+		/*Time for some hover effects*/
+		/*We will apply the hover effect the the lineage of the element also*/
+		.tree li a:hover, .tree li a:hover~ul li a {
+			background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+		}
+		/*Connector styles on hover*/
+		.tree li a:hover~ul li::after,
+		.tree li a:hover~ul li::before,
+		.tree li a:hover~ul::before,
+		.tree li a:hover~ul ul::before
+		{
+			border-color: #94a0b4;
+		}
+
+		/*TREE2*/
+		.tree2 {
+            transform: scale(1, -1);
+            position: relative;
+            bottom: -100px;
+		}
+		.tree2 ul {
+			padding-top: 20px; position: relative;
+
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+			transition: all 0.5s;
+		}
+
+		.tree2 li {
+			float: left; text-align: center;
+			list-style-type: none;
+			position: relative;
+			padding: 20px 5px 0 5px;
+
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+			transition: all 0.5s;
+		}
+
+		/*We will use ::before and ::after to draw the connectors*/
+
+		.tree2 li::before, .tree2 li::after{
+			content: '';
+			position: absolute; top: 0; right: 50%;
+			border-top: 1px solid #ccc;
+			width: 50%; height: 45px;
+			z-index: -1;
+		}
+		.tree2 li::after{
+			right: auto; left: 50%;
+			border-left: 1px solid #ccc;
+		}
+
+		/*We need to remove left-right connectors from elements without
+		any siblings*/
+		.tree2 li:only-child::after, .tree2 li:only-child::before {
+			display: none;
+		}
+
+		/*Remove space from the top of single children*/
+		.tree2 li:only-child{ padding-top: 0;}
+
+		/*Remove left connector from first child and
+		right connector from last child*/
+		.tree2 li:first-child::before, .tree2 li:last-child::after{
+			border: 0 none;
+		}
+		/*Adding back the vertical connector to the last nodes*/
+		.tree2 li:last-child::before{
+			border-right: 1px solid #ccc;
+			border-radius: 0 5px 0 0;
+
+			-webkit-transform: translateX(1px);
+			-moz-transform: translateX(1px);
+			transform: translateX(1px);
+
+			-webkit-border-radius: 0 5px 0 0;
+			-moz-border-radius: 0 5px 0 0;
+			border-radius: 0 5px 0 0;
+		}
+		.tree2 li:first-child::after{
+			border-radius: 5px 0 0 0;
+			-webkit-border-radius: 5px 0 0 0;
+			-moz-border-radius: 5px 0 0 0;
+		}
+
+		/*Time to add downward connectors from parents*/
+		.tree2 ul ul::before{
+			content: '';
+			position: absolute; top: -12px; left: 50%;
+			border-left: 1px solid #ccc;
+			width: 0; height: 32px;
+			z-index: -1;
+		}
+
+		.tree2 li a{
+			border: 1px solid #ccc;
+			padding: 5px 10px;
+			text-decoration: none;
+			color: #666;
+			font-family: arial, verdana, tahoma;
+			font-size: 11px;
+			display: inline-block;
+			background: white;
+            transform: scale(1, -1);
+
+			-webkit-border-radius: 5px;
+			-moz-border-radius: 5px;
+			border-radius: 5px;
+
+			-webkit-transition: all 0.5s;
+			-moz-transition: all 0.5s;
+			transition: all 0.5s;
+		}
+		.tree2 li a+a {
+			margin-left: 20px;
+			position: relative;
+		}
+		.tree2 li a+a::before {
+			content: '';
+			position: absolute;
+			border-top: 1px solid #ccc;
+			top: 50%; left: -21px;
+			width: 20px;
+		}
+
+		/*Time for some hover effects*/
+		/*We will apply the hover effect the the lineage of the element also*/
+		.tree2 li a:hover, .tree2 li a:hover~ul li a {
+			background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+		}
+		/*Connector styles on hover*/
+		.tree2 li a:hover~ul li::after,
+		.tree2 li a:hover~ul li::before,
+		.tree2 li a:hover~ul::before,
+		.tree2 li a:hover~ul ul::before
+		{
+			border-color: #94a0b4;
+		}
+
+    </style>
+  <!-- Add additional CSS in static file -->
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-sm-2">
+      {% block sidebar %}
+      <ul class="sidebar-nav">
+          <li><a href="{% url 'index' %}">Home</a></li>
+          <li><a href="{% url 'individuals' %}">All individuals</a></li>
+          <li><a href="{% url 'properties' %}">All properties</a></li>
+      </ul>
+     {% endblock %}
+      </div>
+      <div class="col-sm-10 ">
+      {% block content %}{% endblock %}
+      {% block pagination %}
+          {% if is_paginated %}
+              <div class="pagination">
+                  <span class="page-links">
+                      {% if page_obj.has_previous %}
+                          <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                      {% endif %}
+                      <span class="page-current">
+                          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                      </span>
+                      {% if page_obj.has_next %}
+                          <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                      {% endif %}
+                  </span>
+              </div>
+          {% endif %}
+        {% endblock %}
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

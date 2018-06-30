@@ -1,0 +1,62 @@
+{% extends "base_generic.html" %}
+{% block content %}
+  <h1>ENAR ID: {{ individual.ENAR }}</h1>
+
+  <p><strong>Species:</strong> {{ individual.species }}</p>
+  <p><strong>SubSpecies:</strong> {{ individual.subspecies }}</p>
+  <p><strong>Location:</strong> {{ individual.location }}</p> <!-- author detail link not yet defined -->
+  <p><strong>Date:</strong> {{ individual.date }}</p>
+  <p><strong><a href=../../{{ individual.meas }} download>Measurement</a></strong> </p>
+  <img src=../../{{ individual.image }} width="1280">
+
+  <p><strong>Properties:</strong></p>
+    <table style="width:100%">
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+      </tr>
+      {% for prop in individual.properties.all %}
+          {% include "databank/property.html" with property=prop %}
+      {% endfor %}
+
+    </table>
+  <p><strong>Family:</strong></p>
+    <p>
+    <div class="tree2">
+        <ul>
+            <li>
+                <a href={{ individual.get_absolute_url }}>{{ individual.ENAR }}</a>
+                        {% if individual.parents.count %}
+                            <ul>
+                                {% for parent_obj in individual.parents.all %}
+                                <li>
+                                    {% include 'databank/parent.html' with parent=parent_obj %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+            </li>
+        </ul>
+    </div>
+    </p>
+
+    <p>
+    <div class="tree">
+        <ul>
+            <li>
+                <a href={{ individual.get_absolute_url }}>{{ individual.ENAR }}</a>
+                        {% if individual.children.count %}
+                            <ul>
+                                {% for child_obj in individual.children.all %}
+                                <li>
+                                    {% include 'databank/child.html' with child=child_obj %}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+            </li>
+        </ul>
+    </div>
+    </p>
+
+{% endblock %}
