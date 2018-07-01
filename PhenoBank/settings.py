@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'databank.apps.DatabankConfig',
     'mptt',
     'formtools',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -116,6 +117,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = 'login'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
@@ -123,4 +126,3 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 UPLOAD_URL = '/upload/'
 UPLOAD_ROOT = os.path.join(BASE_DIR, 'upload/')
-print(UPLOAD_ROOT)

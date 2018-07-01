@@ -278,6 +278,12 @@
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'individuals' %}">All individuals</a></li>
           <li><a href="{% url 'properties' %}">All properties</a></li>
+          {% if user.username == '' %}
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'signup' %}">Sign Up</a></li>
+          {% else %}
+            <li><a href="{% url 'logout' %}">Logout ({{ user.username }})</a></li>
+          {% endif %}
       </ul>
      {% endblock %}
       </div>

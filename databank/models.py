@@ -3,6 +3,23 @@ from django.urls import reverse  # Used to generate URLs by reversing the URL pa
 import uuid
 from mptt.models import MPTTModel, TreeForeignKey
 
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    email_confirmed = models.BooleanField(default=False)
+    bio = models.TextField(max_length=500, blank=True)
+    location = models.CharField(max_length=30, blank=True)
+    birth_date = models.DateField(null=True, blank=True)
+
+@receiver(post_save, sender=User)
+def update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
+
 # Create your models here.
 
 class Species(models.Model):
@@ -111,11 +128,18 @@ class Individual(models.Model):
     Model representing a individual.
     """
     ENAR = models.CharField('ENAR ID', max_length=10, help_text='ENAR ID')
+    Name = models.CharField('Name', max_length=100, help_text='Name')
 
     location = models.ForeignKey('location', on_delete=models.SET_NULL, null=True, help_text="Birth Location")
     date = models.DateField( help_text='Birth Date')
     species = models.ForeignKey('Species', on_delete=models.SET_NULL, null=True)
     subspecies = models.ForeignKey('Subspecies', on_delete=models.SET_NULL, null=True)
+
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+    )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     parent = models.ManyToManyField('self', blank=True, related_name='parents', symmetrical=False)
     child = models.ManyToManyField('self', blank=True, related_name='children', symmetrical=False)
@@ -133,7 +157,7 @@ class Individual(models.Model):
         """
         String for representing the Model object.
         """
-        return self.ENAR
+        return self.Name + " (" + self.ENAR + ")"
 
     def get_absolute_url(self):
         """

@@ -1,10 +1,22 @@
-from django.shortcuts import render
-
-# Create your views here.
 from .models import Species, Subspecies, Location, Individual, Option, Property_base, Property
 from django.http import HttpResponseRedirect
 from formtools.wizard.views import SessionWizardView
+from django.core.files.storage import FileSystemStorage
+import os
+from django.conf import settings
+from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import render, redirect
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from django.template.loader import render_to_string
+from .forms import SignUpForm
+from .tokens import account_activation_token
+from django.utils.encoding import force_text
+from django.contrib.auth import login
+from django.contrib.auth.models import User
+from django.utils.http import urlsafe_base64_decode
 
+# Create your views here.
 
 def index(request):
     """
@@ -57,9 +69,84 @@ def isMulti(wizard):
     return cleaned_data.get('type', True) == ['C']
 
 class PropertyWizard(SessionWizardView):
+
+    species = None
+
+    def get_form_kwargs(self, step):
+        if step == '1':
+            return {'species' : self.species}
+        return {}
+
     def get_template_names(self):
         return "databank/property_form.html"
 
-    def done(self, form_list, **kwargs):
+    def process_step(self, form):
+        formData = self.get_form_step_data(form)
+        if self.steps.current == '0':
+            self.species = formData.get('0-species')
+        return formData
 
+    def done(self, form_list, **kwargs):
         return HttpResponseRedirect('../properties/')
+
+class IndividualWizard(SessionWizardView):
+
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+    species = None
+
+    def get_template_names(self):
+        return "databank/property_form.html"
+
+    def get_form_kwargs(self, step):
+        if step == '1':
+            return {'species' : self.species}
+        return {}
+
+    def process_step(self, form):
+        formData = self.get_form_step_data(form)
+        if self.steps.current == '0':
+            self.species = formData.get('0-species')
+        return formData
+
+    def done(self, form_list, **kwargs):
+        return HttpResponseRedirect('../individuals/')
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            subject = 'Activate Your MySite Account'
+            message = render_to_string('databank/account_activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            user.email_user(subject, message)
+            return redirect('account_activation_sent')
+    else:
+        form = SignUpForm()
+    return render(request, 'databank/signup.html', {'form': form})
+
+def account_activation_sent(request):
+    return render(request, 'databank/account_activation_sent.html')
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.profile.email_confirmed = True
+        user.save()
+        login(request, user)
+        return redirect('index')
+    else:
+        return render(request, 'databank/account_activation_invalid.html')
