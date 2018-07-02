@@ -94,16 +94,41 @@ class IndividualProperties(forms.Form):
         species = kwargs.pop('species')
         super().__init__(*args, **kwargs)
         if species:
+            self.fields['species'] = forms.ModelChoiceField(queryset=Species.objects.all(), initial=species, widget=forms.HiddenInput)
             properties = Property_base.objects._mptt_filter(species=species)
             for property in properties:
                 name = property.name
                 type = property.type
                 if type == 'N':
-                    self.fields[name] = forms.CharField(max_length=0, disabled=True, show_hidden_initial=True, widget=NameOnlyWidget)
+                    self.fields[name] = forms.CharField(max_length=0, disabled=True, show_hidden_initial=True,
+                                                        widget=NameOnlyWidget)
                 elif type == 'T':
-                    self.fields[name] = forms.CharField(max_length=100,required=False)
+                    self.fields[name] = forms.CharField(max_length=100, required=False)
                 elif type == 'F':
-                    self.fields[name] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal,required=True)
+                    self.fields[name] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal,
+                                                         required=True)
                 elif type == 'C':
                     options = Option.objects.filter(property=property)
                     self.fields[name] = forms.ModelChoiceField(queryset=options, required=True)
+        else:
+            data = kwargs.pop('data')
+            species = data['1-species']
+            self.fields['species'] = forms.ModelChoiceField(queryset=Species.objects.all(), initial=species,
+                                                            widget=forms.HiddenInput)
+            properties = Property_base.objects._mptt_filter(species=species)
+            for property in properties:
+                name = property.name
+                type = property.type
+                if type == 'N':
+                    self.fields[name] = forms.CharField(max_length=0, disabled=True, show_hidden_initial=True,
+                                                        widget=NameOnlyWidget, required=False)
+                elif type == 'T':
+                    self.fields[name] = forms.CharField(max_length=100, required=False, initial=data["1-"+name])
+                elif type == 'F':
+                    self.fields[name] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal,
+                                                         required=True, initial=data["1-"+name])
+                elif type == 'C':
+                    options = Option.objects.filter(property=property)
+                    self.fields[name] = forms.ModelChoiceField(queryset=options, required=True, initial=data["1-"+name])
+
+

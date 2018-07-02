@@ -172,8 +172,8 @@ class Property(models.Model):
 
     ID = models.UUIDField(primary_key=True, default=uuid.uuid4,
                           help_text="Unique ID for this particular base property across whole bank")
-    numVal = models.FloatField(help_text="Enter the value of the numerical option")
-    textVal = models.CharField(max_length=200, help_text="Enter the minimal value of the text option")
+    numVal = models.FloatField(help_text="Enter the value of the numerical option", null=True)
+    textVal = models.CharField(max_length=200, help_text="Enter the minimal value of the text option", null=True)
     parent = models.ForeignKey('Property_base', on_delete=models.CASCADE, null=True)
     animal = models.ForeignKey('Individual', on_delete=models.CASCADE, null=True, related_name='properties')
 

@@ -87,11 +87,36 @@ class PropertyWizard(SessionWizardView):
         return formData
 
     def done(self, form_list, **kwargs):
+        data = self.get_all_cleaned_data()
+        prop = Property_base.objects.create(
+            name = data['name'],
+            species = data['species'],
+            parent = data['parent'],
+            type = data['type'][0],
+        )
+        if( data['type'] == ['F'] ):
+            prop.minVal = data['minVal']
+            prop.maxVal = data['maxVal']
+            prop.save()
+        elif(data['type'] == ['C']):
+            for i in range(10):
+                optName = "opt%d" % (i+1)
+                if( data[optName] != "" ):
+                    Option.objects.create(
+                        name = data[optName],
+                        property = prop
+                    )
+        individuals = Individual.objects.filter(species = data['species'])
+        for individual in individuals:
+            Property.objects.create(
+                parent = prop,
+                animal = individual
+            )
         return HttpResponseRedirect('../properties/')
 
 class IndividualWizard(SessionWizardView):
 
-    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'photos'))
+    file_storage = FileSystemStorage(location=settings.UPLOAD_ROOT)
     species = None
 
     def get_template_names(self):
@@ -109,6 +134,35 @@ class IndividualWizard(SessionWizardView):
         return formData
 
     def done(self, form_list, **kwargs):
+        data = self.get_all_cleaned_data()
+        print(data)
+        animal = Individual.objects.create(
+            ENAR = data['ENAR'],
+            Name = data['Name'],
+            species = data['species'],
+            subspecies = data['subspecies'],
+            gender = data['gender'][0],
+            date = data['date'],
+            location = data['location'],
+            image = data['image'],
+            meas = data['meas'],
+        )
+        animal.parent.set(data['parents'])
+        animal.child.set(data['children'])
+        animal.save()
+        properties = Property_base.objects._mptt_filter(species = data['species'])
+        for property in properties:
+            prop = Property.objects.create(
+                animal = animal,
+                parent = property,
+            )
+            if (property.type == 'F'):
+                prop.numVal = data[property.name]
+            elif(property.type == 'T'):
+                prop.textVal = data[property.name]
+            elif(property.type == 'C'):
+                prop.textVal = data[property.name].name
+            prop.save()
         return HttpResponseRedirect('../individuals/')
 
 def signup(request):
@@ -119,11 +173,11 @@ def signup(request):
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
-            subject = 'Activate Your MySite Account'
+            subject = 'Activate Your PhenoBank Account'
             message = render_to_string('databank/account_activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
                 'token': account_activation_token.make_token(user),
             })
             user.email_user(subject, message)
@@ -137,9 +191,9 @@ def account_activation_sent(request):
 
 def activate(request, uidb64, token):
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
+        uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist) as e:
         user = None
 
     if user is not None and account_activation_token.check_token(user, token):
