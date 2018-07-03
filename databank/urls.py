@@ -1,13 +1,13 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
-from .forms import PropertyMain, PropertyChoice, PropertyNumeric, PropertyParents, IndividualMain, IndividualProperties
+from .forms import PropertyMain, PropertyChoice, PropertyNumeric, IndividualMain, IndividualProperties, SpeciesSelector
 from .views import PropertyWizard, isNumber, isMulti, IndividualWizard
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 
-property_forms = [PropertyMain, PropertyParents, PropertyChoice, PropertyNumeric]
-inidividual_forms = [IndividualMain, IndividualProperties]
+property_forms = [SpeciesSelector, PropertyMain, PropertyChoice, PropertyNumeric]
+inidividual_forms = [SpeciesSelector, IndividualMain, IndividualProperties]
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -15,10 +15,11 @@ urlpatterns = [
     path(r'individual/(?P<pk>\d+)$', login_required(views.IndividualDetailView.as_view()), name='individual-detail'),
     path('properties/', login_required(views.PropertyListView.as_view()), name='properties'),
     path(r'property/(?P<pk>\d+)$', login_required(views.PropertyDetailView.as_view()), name='property-detail'),
-    path('addproperty/', staff_member_required(PropertyWizard.as_view(property_forms,
+    path('properties/new/', staff_member_required(PropertyWizard.as_view(property_forms,
         condition_dict={'2': isMulti, '3': isNumber}
     ))),
-    path('addindividual/', staff_member_required(IndividualWizard.as_view(inidividual_forms))),
+    path('individuals/new/', login_required(IndividualWizard.as_view(inidividual_forms))),
+    path(r'individuals/edit/(?P<id>\d+)/$', login_required(IndividualWizard.as_view(inidividual_forms[1:]))),
     path(r'login/*', auth_views.login, name='login'),
     path(r'logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     path(r'^password_reset/$', auth_views.password_reset, name='password_reset'),

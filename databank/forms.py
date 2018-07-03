@@ -13,6 +13,12 @@ class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
     captcha = CaptchaField()
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Email already exists")
+        return email
+
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
@@ -39,19 +45,31 @@ class PropertyMain(forms.Form):
         ('C', 'Choice'),
     )
     type = forms.MultipleChoiceField(choices=TYPE_CHOICES, required=True)
-    species = forms.ModelChoiceField(queryset=Species.objects.all(),required=True)
-
-class PropertyParents(forms.Form):
     parent = forms.ModelChoiceField(Property_base.objects._mptt_filter(type='N'),required=True)
+
     def __init__(self, *args, **kwargs):
         species = kwargs.pop('species')
-        super(PropertyParents, self).__init__(*args, **kwargs)
+        super(PropertyMain, self).__init__(*args, **kwargs)
         if species:
             self.fields['parent'] = forms.ModelChoiceField(Property_base.objects._mptt_filter(species=species, type='N'),required=True)
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        species = self.cleaned_data['species']
+        if Property_base.objects._mptt_filter(name=name,species=species).exists():
+            raise ValidationError("Property with this name already exists for this species")
+        return email
 
 class PropertyNumeric(forms.Form):
     maxVal = forms.FloatField(required=False)
     minVal = forms.FloatField(required=False)
+    def clean(self):
+        form_data = self.cleaned_data
+        maxVal = form_data['maxVal']
+        minVal = form_data['minVal']
+        if minVal and maxVal and minVal >= maxVal:
+            self._errors["password"] = ["Password do not match"]
+        return form_data
 
 class PropertyChoice(forms.Form):
     opt1 = forms.CharField(max_length=100, required=True)
@@ -65,14 +83,18 @@ class PropertyChoice(forms.Form):
     opt9 = forms.CharField(max_length=100, required=False)
     opt10 = forms.CharField(max_length=100, required=False)
 
+class SpeciesSelector(forms.Form):
+    species = forms.ModelChoiceField(queryset=Species.objects.all(),required=True)
 
-class IndividualMain(forms.Form):
+class IndividualMain(forms.ModelForm):
+    class Meta:
+        model = Individual
+        exclude = ('owner','id','species')
 
     ENAR = forms.CharField(max_length=10, required=True)
     Name = forms.CharField(max_length=100, required=True)
 
     location = forms.ModelChoiceField(queryset=Location.objects.all(), required=True)
-    species = forms.ModelChoiceField(queryset=Species.objects.all(), required=True)
     subspecies = forms.ModelChoiceField(queryset=Subspecies.objects.all(), required=True)
 
     date = forms.DateField(widget = forms.SelectDateWidget(),required=True)
@@ -84,51 +106,65 @@ class IndividualMain(forms.Form):
     gender = forms.MultipleChoiceField(choices=GENDER_CHOICES, required=True)
 
     parents = forms.ModelMultipleChoiceField(queryset=Individual.objects.all(), required=False)
-    children = forms.ModelMultipleChoiceField(queryset=Individual.objects.all(), required=False)
 
-    image = forms.ImageField(required=False)
-    meas = forms.FileField(required=False)
+    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}),required=False)
 
-class IndividualProperties(forms.Form):
     def __init__(self, *args, **kwargs):
         species = kwargs.pop('species')
-        super().__init__(*args, **kwargs)
+        super(IndividualMain, self).__init__(*args, **kwargs)
         if species:
-            self.fields['species'] = forms.ModelChoiceField(queryset=Species.objects.all(), initial=species, widget=forms.HiddenInput)
-            properties = Property_base.objects._mptt_filter(species=species)
-            for property in properties:
-                name = property.name
-                type = property.type
-                if type == 'N':
-                    self.fields[name] = forms.CharField(max_length=0, disabled=True, show_hidden_initial=True,
-                                                        widget=NameOnlyWidget)
-                elif type == 'T':
-                    self.fields[name] = forms.CharField(max_length=100, required=False)
-                elif type == 'F':
-                    self.fields[name] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal,
-                                                         required=True)
-                elif type == 'C':
-                    options = Option.objects.filter(property=property)
-                    self.fields[name] = forms.ModelChoiceField(queryset=options, required=True)
-        else:
-            data = kwargs.pop('data')
-            species = data['1-species']
-            self.fields['species'] = forms.ModelChoiceField(queryset=Species.objects.all(), initial=species,
-                                                            widget=forms.HiddenInput)
-            properties = Property_base.objects._mptt_filter(species=species)
-            for property in properties:
-                name = property.name
-                type = property.type
-                if type == 'N':
-                    self.fields[name] = forms.CharField(max_length=0, disabled=True, show_hidden_initial=True,
-                                                        widget=NameOnlyWidget, required=False)
-                elif type == 'T':
-                    self.fields[name] = forms.CharField(max_length=100, required=False, initial=data["1-"+name])
-                elif type == 'F':
-                    self.fields[name] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal,
-                                                         required=True, initial=data["1-"+name])
-                elif type == 'C':
-                    options = Option.objects.filter(property=property)
-                    self.fields[name] = forms.ModelChoiceField(queryset=options, required=True, initial=data["1-"+name])
+            subspecies = forms.ModelChoiceField(queryset=Subspecies.objects.filter(species=species), required=True)
+            parents = forms.ModelMultipleChoiceField(queryset=Individual.objects.filter(species=species), required=False)
+
+    def clean_ENAR(self):
+        ENAR = self.cleaned_data['ENAR']
+        species = self.cleaned_data['species']
+        if Individual.objects._mptt_filter(ENAR=ENAR, species=species).exists():
+            raise ValidationError("Individual with this ENAR already exists for this species")
+        return ENAR
+
+    def clean_parents(self):
+        parents = self.cleaned_data['parents']
+        if parents.count() > 2:
+            raise ValidationError("You can select 2 parents at most")
+        if parents.count() == 2 and parents[0].gender == parents[1].gender():
+            raise ValidationError("Parents must be a different gender")
+        return ENAR
+
+class IndividualProperties(forms.Form):
+
+    data = Null
+    formIdxStr = ""
+
+    def getInitial(self,name):
+        return data[self.formIdxStr+name] if data else Null
+
+
+    def __init__(self, *args, **kwargs):
+        species = kwargs.pop('species')
+        modify = kwargs.pop('modify')
+        self.formIdxStr = "1-" if modify else "2-"
+        super().__init__(*args, **kwargs)
+        if not species:
+            self.data = kwargs.pop('data')
+            species = data[formIdxStr+'species']
+
+        self.fields['species'] = forms.ModelChoiceField(queryset=Species.objects.all(), initial=species,
+                                                        widget=forms.HiddenInput)
+        properties = Property_base.objects._mptt_filter(species=species)
+        for property in properties:
+            name = property.name
+            type = property.type
+            if type == 'N':
+                self.fields[name] = forms.CharField(max_length=0, disabled=True, show_hidden_initial=True,
+                                                    widget=NameOnlyWidget, required=False)
+            elif type == 'T':
+                self.fields[name] = forms.CharField(max_length=100, required=True, initial=getInitial(name))
+            elif type == 'F':
+                self.fields[name] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal,
+                                                     required=True, initial=getInitial(name))
+            elif type == 'C':
+                options = Option.objects.filter(property=property)
+                self.fields[name] = forms.ModelChoiceField(queryset=options, required=True, initial=getInitial(name))
 
 

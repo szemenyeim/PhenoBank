@@ -7,8 +7,11 @@
   <p><strong>Gender:</strong> {{ individual.gender }}</p>
   <p><strong>Location:</strong> {{ individual.location }}</p> <!-- author detail link not yet defined -->
   <p><strong>Date:</strong> {{ individual.date }}</p>
-  <p><strong><a href=../../{{ individual.meas }} download>Measurement</a></strong> </p>
-  <img src=../../{{ individual.image }} width="1280">
+  {% for img in individual.images.all %}
+    <a href={{ img.image }}>
+    <img src={{ img.image_thumbnail }}>
+    </a>
+  {% endfor %}
 
   <p><strong>Properties:</strong></p>
     <table style="width:100%">
@@ -21,6 +24,7 @@
       {% endfor %}
 
     </table>
+
   <p><strong>Family:</strong></p>
     <p>
     <div class="tree2">
@@ -59,5 +63,10 @@
         </ul>
     </div>
     </p>
+
+
+<form action="../../individuals/edit/{{ individual.id }}/'">
+    <input type="submit" value="Modify" />
+</form>
 
 {% endblock %}

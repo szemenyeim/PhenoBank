@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmed = models.BooleanField(default=False)
@@ -42,6 +45,7 @@ class Subspecies(models.Model):
     Model representing a subspecies.
     """
     name = models.CharField(max_length=200, help_text="Enter the subspecies name")
+    species = models.ForeignKey(Species, on_delete=models.CASCADE, null=True)
 
     class Meta:
         ordering = ["name"]
@@ -141,11 +145,9 @@ class Individual(models.Model):
     )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
-    parent = models.ManyToManyField('self', blank=True, related_name='parents', symmetrical=False)
-    child = models.ManyToManyField('self', blank=True, related_name='children', symmetrical=False)
+    parents = models.ManyToManyField('self', blank=True, related_name='children', symmetrical=False)
 
-    image = models.ImageField('Image',upload_to=upl_file_name)
-    meas = models.FileField('Measurements',upload_to=upl_file_name)
+    owner = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, help_text="Assigned User")
 
     ID = models.UUIDField(primary_key=True, default=uuid.uuid4,
                           help_text="Unique ID for this particular Individual across whole bank")
@@ -165,13 +167,22 @@ class Individual(models.Model):
         """
         return reverse('individual-detail', args=[str(self.ID)])
 
+class Image(models.Model):
+
+    animal = models.ForeignKey('Individual', on_delete=models.CASCADE, null=True, related_name='images', required=True)
+    image = models.ImageField('Image',upload_to=upl_file_name, required=True)
+    image_thumbnail = ImageSpecField(source='image',
+                                      processors=[ResizeToFill(100, 50)],
+                                      format='JPEG',
+                                      options={'quality': 60})
+
 class Property(models.Model):
     """
     Model representing a option.
     """
 
     ID = models.UUIDField(primary_key=True, default=uuid.uuid4,
-                          help_text="Unique ID for this particular base property across whole bank")
+                          help_text="Unique ID for this particular property across whole bank")
     numVal = models.FloatField(help_text="Enter the value of the numerical option", null=True)
     textVal = models.CharField(max_length=200, help_text="Enter the minimal value of the text option", null=True)
     parent = models.ForeignKey('Property_base', on_delete=models.CASCADE, null=True)

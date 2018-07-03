@@ -1,11 +1,11 @@
-from .models import Species, Subspecies, Location, Individual, Option, Property_base, Property
-from django.http import HttpResponseRedirect
+from .models import Species, Subspecies, Location, Individual, Option, Property_base, Property, Image
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from formtools.wizard.views import SessionWizardView
 from django.core.files.storage import FileSystemStorage
 import os
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
@@ -14,7 +14,6 @@ from .tokens import account_activation_token
 from django.utils.encoding import force_text
 from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.utils.http import urlsafe_base64_decode
 
 # Create your views here.
 
@@ -118,44 +117,66 @@ class IndividualWizard(SessionWizardView):
 
     file_storage = FileSystemStorage(location=settings.UPLOAD_ROOT)
     species = None
+    animal = None
+    modify = False
+
+    def render_next_step(self, form, **kwargs):
+        step = self.steps.next
+        if step == '0':
+            id = self.kwargs.pop('id')
+            if id:
+                self.animal = get_object_or_404(Individual, pk=id)
+                self.modify = True
+                self.species = animal.species
+            if self.animal.owner != request.user:
+                return HttpResponseForbidden()
+        return super(IndividualWizard, self).render_next_step()
 
     def get_template_names(self):
         return "databank/property_form.html"
 
     def get_form_kwargs(self, step):
-        if step == '1':
-            return {'species' : self.species}
-        return {}
+        return {'species' : self.species,'modify' : self.modify}
 
     def process_step(self, form):
         formData = self.get_form_step_data(form)
-        if self.steps.current == '0':
+        if not modify and self.steps.current == '0':
             self.species = formData.get('0-species')
         return formData
 
+    def get_form_instance(self, step):
+        if modify and step == 0:
+            return self.animal  # do NOT set self.instance, just return the model instance you want
+        return self.instance_dict.get(step, None)  # the default implementation
+
     def done(self, form_list, **kwargs):
         data = self.get_all_cleaned_data()
-        print(data)
-        animal = Individual.objects.create(
-            ENAR = data['ENAR'],
-            Name = data['Name'],
-            species = data['species'],
-            subspecies = data['subspecies'],
-            gender = data['gender'][0],
-            date = data['date'],
-            location = data['location'],
-            image = data['image'],
-            meas = data['meas'],
+        if self.animal is None:
+            self.animal = animal = Individual.objects.create(
+            owner = self.request.user
         )
-        animal.parent.set(data['parents'])
-        animal.child.set(data['children'])
-        animal.save()
+        self.animal.ENAR = data['ENAR']
+        self.animal.Name = data['Name']
+        self.animal.species = data['species']
+        self.animal.subspecies = data['subspecies']
+        self.animal.gender = data['gender'][0]
+        self.animal.date = data['date']
+        self.animal.location = data['location']
+        self.animal.parents.set(data['parents'])
+        self.animal.save()
+        for img in self.request.FILES.getlist('image'):
+            Image.objects.create(
+                animal=self.animal,
+                image=img
+            )
         properties = Property_base.objects._mptt_filter(species = data['species'])
         for property in properties:
-            prop = Property.objects.create(
-                animal = animal,
-                parent = property,
-            )
+            prop = Property.objects.filter(animal = animal, parent = property)
+            if prop is None:
+                prop = Property.objects.create(
+                    animal = animal,
+                    parent = property,
+                )
             if (property.type == 'F'):
                 prop.numVal = data[property.name]
             elif(property.type == 'T'):
