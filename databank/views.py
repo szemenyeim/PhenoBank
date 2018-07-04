@@ -1,7 +1,6 @@
 from .models import Species, Subspecies, Location, Individual, Option, Property_base, Property, Image
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
 from formtools.wizard.views import SessionWizardView
-from django.core.files.storage import FileSystemStorage
 import os
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -9,11 +8,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
-from .forms import SignUpForm
+from .forms import SignUpForm, ImageForm
 from .tokens import account_activation_token
-from django.utils.encoding import force_text
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -44,6 +43,14 @@ class IndividualListView(generic.ListView):
 class IndividualDetailView(generic.DetailView):
     model = Individual
 
+
+    def get_context_data(self, **kwargs):
+        form = ImageForm()
+        extra_context = {'form': form }
+        context = super(IndividualDetailView, self).get_context_data(**kwargs)
+        context.update(extra_context)
+        return context
+
 class PropertyListView(generic.ListView):
     model = Property_base
     paginate_by = 100
@@ -57,15 +64,15 @@ class PropertyDetailView(generic.DetailView):
 
 def isNumber(wizard):
     # try to get the cleaned data of step 1
-    cleaned_data = wizard.get_cleaned_data_for_step('0') or {}
+    cleaned_data = wizard.get_cleaned_data_for_step('1') or {}
     # check if the property is a number
-    return cleaned_data.get('type', True) == ['F']
+    return cleaned_data.get('type', True) == 'F'
 
 def isMulti(wizard):
     # try to get the cleaned data of step 1
-    cleaned_data = wizard.get_cleaned_data_for_step('0') or {}
+    cleaned_data = wizard.get_cleaned_data_for_step('1') or {}
     # check if the property is multiple choice
-    return cleaned_data.get('type', True) == ['C']
+    return cleaned_data.get('type', True) == 'C'
 
 class PropertyWizard(SessionWizardView):
 
@@ -91,13 +98,14 @@ class PropertyWizard(SessionWizardView):
             name = data['name'],
             species = data['species'],
             parent = data['parent'],
-            type = data['type'][0],
+            type = data['type'],
         )
-        if( data['type'] == ['F'] ):
+        print(data['type'])
+        if( data['type'] == 'F' ):
             prop.minVal = data['minVal']
             prop.maxVal = data['maxVal']
             prop.save()
-        elif(data['type'] == ['C']):
+        elif(data['type'] == 'C'):
             for i in range(10):
                 optName = "opt%d" % (i+1)
                 if( data[optName] != "" ):
@@ -111,80 +119,125 @@ class PropertyWizard(SessionWizardView):
                 parent = prop,
                 animal = individual
             )
-        return HttpResponseRedirect('../properties/')
+        return HttpResponseRedirect('../../properties/')
+
+class MyCollection(list):
+    def __init__(self, *args, **kwargs):
+        super(MyCollection, self).__init__( *args, **kwargs)
+    ordered = True
 
 class IndividualWizard(SessionWizardView):
 
     file_storage = FileSystemStorage(location=settings.UPLOAD_ROOT)
-    species = None
-    animal = None
-    modify = False
 
-    def render_next_step(self, form, **kwargs):
-        step = self.steps.next
-        if step == '0':
-            id = self.kwargs.pop('id')
-            if id:
-                self.animal = get_object_or_404(Individual, pk=id)
-                self.modify = True
-                self.species = animal.species
-            if self.animal.owner != request.user:
-                return HttpResponseForbidden()
-        return super(IndividualWizard, self).render_next_step()
+    def __init__(self, **kwargs):
+        super(IndividualWizard, self).__init__(**kwargs)
+
+    def isModify(self):
+        return self.kwargs.get('pk',None) is not None
+
+    def getAnimal(self):
+        query = Individual.objects.filter(ID=self.kwargs.get('pk', None))
+        if query.exists():
+            return query.get()
+        return None
+
+    def render(self, form=None, **kwargs):
+        if self.isModify() and self.getAnimal().owner != self.request.user:
+            return HttpResponseForbidden()
+        return super(IndividualWizard, self).render(form, **kwargs)
 
     def get_template_names(self):
         return "databank/property_form.html"
 
     def get_form_kwargs(self, step):
-        return {'species' : self.species,'modify' : self.modify}
+        if step == '1' or step == '2':
+            return {'species' : self.getSpecies(),'modify' : self.isModify()}
+        return {}
 
-    def process_step(self, form):
-        formData = self.get_form_step_data(form)
-        if not modify and self.steps.current == '0':
-            self.species = formData.get('0-species')
-        return formData
+    def getSpecies(self):
+        if not self.isModify():
+            return self.get_cleaned_data_for_step('0')['species']
+        else:
+            return self.getAnimal().species
 
     def get_form_instance(self, step):
-        if modify and step == 0:
-            return self.animal  # do NOT set self.instance, just return the model instance you want
+        if self.isModify() and step == '1':
+            return self.getAnimal()  # do NOT set self.instance, just return the model instance you want
+        if step == '2':
+            if self.isModify():
+                return Property.objects.filter(animal=self.getAnimal()).order_by('parent')
+            else:
+                return Property.objects.none()
         return self.instance_dict.get(step, None)  # the default implementation
 
+    def get_form_initial(self, step):
+        if step == '2' and not self.isModify():
+            props = Property_base.objects._mptt_filter(species=self.getSpecies())
+            animal = self.getAnimal()
+            initial = []
+            for prop in props:
+                initial.append({'parent':prop, 'animal':animal})
+            return initial
+        return self.initial_dict.get(step, {})
+
     def done(self, form_list, **kwargs):
+        animal = self.getAnimal()
+        for i, form in enumerate(form_list):
+            if form.is_valid():
+                if self.isModify():
+                    form.save()
+                else:
+                    if i == 1:
+                        animal = form.save(commit=False)
+                        animal.owner = self.request.user
+                        animal.save()
+                    elif i > 1:
+                        props = form.save(commit=False)
+                        for prop in props:
+                            prop.animal=animal
+                            prop.save()
         data = self.get_all_cleaned_data()
-        if self.animal is None:
-            self.animal = animal = Individual.objects.create(
-            owner = self.request.user
-        )
-        self.animal.ENAR = data['ENAR']
-        self.animal.Name = data['Name']
-        self.animal.species = data['species']
-        self.animal.subspecies = data['subspecies']
-        self.animal.gender = data['gender'][0]
-        self.animal.date = data['date']
-        self.animal.location = data['location']
-        self.animal.parents.set(data['parents'])
-        self.animal.save()
-        for img in self.request.FILES.getlist('image'):
+        if data['images']:
             Image.objects.create(
-                animal=self.animal,
-                image=img
+                animal=animal,
+                image=data['images']
             )
-        properties = Property_base.objects._mptt_filter(species = data['species'])
-        for property in properties:
-            prop = Property.objects.filter(animal = animal, parent = property)
-            if prop is None:
-                prop = Property.objects.create(
-                    animal = animal,
-                    parent = property,
-                )
-            if (property.type == 'F'):
-                prop.numVal = data[property.name]
-            elif(property.type == 'T'):
-                prop.textVal = data[property.name]
-            elif(property.type == 'C'):
-                prop.textVal = data[property.name].name
-            prop.save()
-        return HttpResponseRedirect('../individuals/')
+        prefix = "../../../" if self.isModify() else "../../"
+        return HttpResponseRedirect(prefix + "individuals")
+
+def model_form_upload(request, pk=None):
+    if request.method == 'POST':
+        animal = None
+        query = Individual.objects.filter(ID=pk)
+        if query.exists():
+            animal = query.get()
+        if animal is None or animal.owner != request.user:
+            return HttpResponseForbidden()
+
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = form.save(commit=False)
+            image.animal = animal
+            image.save()
+            return redirect(animal.get_absolute_url())
+
+    return HttpResponseNotFound()
+
+def delete_image(request, pk):
+    if request.method == 'GET':
+        image = None
+        animal = None
+        query = Image.objects.filter(pk=pk)
+        if query.exists():
+            image = query.get()
+            animal = image.animal
+        if image is None or animal is None or animal.owner != request.user:
+            return HttpResponseForbidden()
+
+        image.delete()
+        return redirect(animal.get_absolute_url())
+    return HttpResponseNotFound()
 
 def signup(request):
     if request.method == 'POST':

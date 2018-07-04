@@ -1,13 +1,13 @@
 from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
-from .forms import PropertyMain, PropertyChoice, PropertyNumeric, IndividualMain, IndividualProperties, SpeciesSelector
-from .views import PropertyWizard, isNumber, isMulti, IndividualWizard
+from .forms import PropertyMain, PropertyChoice, PropertyNumeric, IndividualMain, PropertyFormSet, SpeciesSelector
+from .views import PropertyWizard, isNumber, isMulti, IndividualWizard, model_form_upload, delete_image
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 
 property_forms = [SpeciesSelector, PropertyMain, PropertyChoice, PropertyNumeric]
-inidividual_forms = [SpeciesSelector, IndividualMain, IndividualProperties]
+inidividual_forms = [SpeciesSelector, IndividualMain, PropertyFormSet]
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -19,7 +19,10 @@ urlpatterns = [
         condition_dict={'2': isMulti, '3': isNumber}
     ))),
     path('individuals/new/', login_required(IndividualWizard.as_view(inidividual_forms))),
-    path(r'individuals/edit/(?P<id>\d+)/$', login_required(IndividualWizard.as_view(inidividual_forms[1:]))),
+    path(r'individuals/edit/(?P<pk>\d+)/$', login_required(IndividualWizard.as_view(inidividual_forms,
+        condition_dict={'0': False})), name='individual-edit'),
+    path(r'individuals/add_image/(?P<pk>\d+)/$', login_required(model_form_upload), name='individual-image-add'),
+    path(r'delete-image/(?P<pk>\d+)/$', login_required(delete_image), name='delete_image'),
     path(r'login/*', auth_views.login, name='login'),
     path(r'logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     path(r'^password_reset/$', auth_views.password_reset, name='password_reset'),

@@ -125,7 +125,7 @@ class Option(models.Model):
         return self.name
 
 def upl_file_name(instance, filename):
-    return '/'.join(['upload', str(instance.pk), filename])
+    return '/'.join(['upload', str(instance.animal.ENAR), filename])
 
 class Individual(models.Model):
     """
@@ -135,7 +135,7 @@ class Individual(models.Model):
     Name = models.CharField('Name', max_length=100, help_text='Name')
 
     location = models.ForeignKey('location', on_delete=models.SET_NULL, null=True, help_text="Birth Location")
-    date = models.DateField( help_text='Birth Date')
+    date = models.DateField( help_text='Birth Date', null=True)
     species = models.ForeignKey('Species', on_delete=models.SET_NULL, null=True)
     subspecies = models.ForeignKey('Subspecies', on_delete=models.SET_NULL, null=True)
 
@@ -147,7 +147,7 @@ class Individual(models.Model):
 
     parents = models.ManyToManyField('self', blank=True, related_name='children', symmetrical=False)
 
-    owner = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, help_text="Assigned User")
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, help_text="Assigned User")
 
     ID = models.UUIDField(primary_key=True, default=uuid.uuid4,
                           help_text="Unique ID for this particular Individual across whole bank")
@@ -167,14 +167,31 @@ class Individual(models.Model):
         """
         return reverse('individual-detail', args=[str(self.ID)])
 
+    def get_addimage_url(self):
+        """
+        Returns the url to access a detail record for this book.
+        """
+        return reverse('individual-image-add', args=[str(self.ID)])
+
+    def get_edit_url(self):
+        """
+        Returns the url to access a detail record for this book.
+        """
+        return reverse('individual-edit', args=[str(self.ID)])
+
+
 class Image(models.Model):
 
-    animal = models.ForeignKey('Individual', on_delete=models.CASCADE, null=True, related_name='images', required=True)
-    image = models.ImageField('Image',upload_to=upl_file_name, required=True)
-    image_thumbnail = ImageSpecField(source='image',
-                                      processors=[ResizeToFill(100, 50)],
-                                      format='JPEG',
-                                      options={'quality': 60})
+    UNID = models.UUIDField(primary_key=True, default=uuid.uuid1,
+                          help_text="Unique ID for this particular image across whole bank")
+    animal = models.ForeignKey('Individual', on_delete=models.CASCADE, null=True, related_name='images')
+    image = models.ImageField('Image',upload_to=upl_file_name)
+
+    def get_delete_url(self):
+        """
+        Returns the url to access a detail record for this book.
+        """
+        return reverse('delete_image', args=[str(self.UNID)])
 
 class Property(models.Model):
     """
@@ -189,10 +206,11 @@ class Property(models.Model):
     animal = models.ForeignKey('Individual', on_delete=models.CASCADE, null=True, related_name='properties')
 
     class Meta:
-        ordering = ["parent"]
+        ordering = ["animal","parent"]
+
 
     def __str__(self):
         """
         String for representing the Model object (in Admin site etc.)
         """
-        return self.animal.ENAR + "/" + self.parent.name
+        return ((self.animal.ENAR + "/") if self.animal else "") + self.parent.name

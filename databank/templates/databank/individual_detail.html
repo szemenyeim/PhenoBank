@@ -7,11 +7,19 @@
   <p><strong>Gender:</strong> {{ individual.gender }}</p>
   <p><strong>Location:</strong> {{ individual.location }}</p> <!-- author detail link not yet defined -->
   <p><strong>Date:</strong> {{ individual.date }}</p>
+
+  <p><strong>Images:</strong></p>
   {% for img in individual.images.all %}
-    <a href={{ img.image }}>
-    <img src={{ img.image_thumbnail }}>
-    </a>
+    {% load imagekit %}
+        <a href="/{{ img.image }}"> {% thumbnail '100x50' img.image %}</a>
+        <a href="{{ img.get_delete_url }}">Delete</a>
   {% endfor %}
+
+    <form action={{ individual.get_addimage_url }} method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+  </form>
 
   <p><strong>Properties:</strong></p>
     <table style="width:100%">
@@ -65,7 +73,7 @@
     </p>
 
 
-<form action="../../individuals/edit/{{ individual.id }}/'">
+<form action="{{ individual.get_edit_url }}">
     <input type="submit" value="Modify" />
 </form>
 
