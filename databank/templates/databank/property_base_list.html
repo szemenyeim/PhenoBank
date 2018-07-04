@@ -1,13 +1,13 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-    <h1>Properties</h1>
+    <h3>Properties</h3>
 
     {% load mptt_tags %}
     <ul>
         {% recursetree property_base_list %}
             <li>
-                <a href="{{ node.get_absolute_url }}">{{ node.name }}</a>
+                <a href="{{ node.get_absolute_url }}">{{ node }}</a>
                 {% if not node.is_leaf_node %}
                     <ul class="children">
                         {{ children }}
@@ -17,8 +17,8 @@
         {% endrecursetree %}
     </ul>
 
-<form action="../properties/new">
-    <input type="submit" value="Add New Property" />
-</form>
+            <form action="../../properties/new">
+                <input type="submit" value="Add New Property" />
+            </form>
 
 {% endblock %}

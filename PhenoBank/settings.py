@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'formtools',
     'captcha',
     'imagekit',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

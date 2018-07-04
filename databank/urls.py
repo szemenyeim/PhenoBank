@@ -3,15 +3,17 @@ from . import views
 from django.contrib.auth import views as auth_views
 from .forms import PropertyMain, PropertyChoice, PropertyNumeric, IndividualMain, PropertyFormSet, SpeciesSelector
 from .views import PropertyWizard, isNumber, isMulti, IndividualWizard, model_form_upload, delete_image
+from .filters import IndividualFilter
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django_filters.views import FilterView
 
 property_forms = [SpeciesSelector, PropertyMain, PropertyChoice, PropertyNumeric]
 inidividual_forms = [SpeciesSelector, IndividualMain, PropertyFormSet]
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('individuals/', login_required(views.IndividualListView.as_view()), name='individuals'),
+    path('individuals/', login_required(FilterView.as_view(filterset_class=IndividualFilter)), name='individuals'),
     path(r'individual/(?P<pk>\d+)$', login_required(views.IndividualDetailView.as_view()), name='individual-detail'),
     path('properties/', login_required(views.PropertyListView.as_view()), name='properties'),
     path(r'property/(?P<pk>\d+)$', login_required(views.PropertyDetailView.as_view()), name='property-detail'),

@@ -97,7 +97,7 @@ class Property_base(MPTTModel):
         """
         String for representing the Model object (in Admin site etc.)
         """
-        return self.name
+        return self.name if self.parent else self.species.__str__()
 
 
     def get_absolute_url(self):

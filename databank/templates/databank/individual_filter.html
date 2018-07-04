@@ -1,0 +1,34 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <form action="" method="get">
+        {% for field in filter.form %}
+            <td>  {{ field.label }} </td><td> {{ field }} </td>
+        {% endfor %}
+        <td><input type="submit" /></td>
+        </tr>
+        </table>
+    </form>
+        <table>
+            <tr>
+                <td><strong>ENAR</strong></td>
+                <td><strong>Name</strong></td>
+                <td><strong>Location</strong></td>
+                <td><strong>Species</strong></td>
+                <td><strong>Subspecies</strong></td>
+                <td><strong>Gender</strong></td>
+                <td><strong>Birth Date</strong></td>
+            </tr>
+            {% for obj in filter.qs %}
+            <tr>
+                <td><a href="{{ obj.get_absolute_url }}" style="display:block;">{{ obj.ENAR }}</a></td>
+                <td>{{ obj.Name }}</td>
+                <td>{{ obj.location }}</td>
+                <td>{{ obj.species }}</td>
+                <td>{{ obj.subspecies }}</td>
+                <td>{{ obj.gender }}</td>
+                <td>{{ obj.date }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+{% endblock %}
