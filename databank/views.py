@@ -1,11 +1,11 @@
 from .models import Species, Subspecies, Location, Individual, Option, Property_base, Property, Image
-from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound, HttpResponse
 from formtools.wizard.views import SessionWizardView
 import os
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes,smart_str
 from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
 from .forms import SignUpForm, ImageForm
@@ -13,7 +13,7 @@ from .tokens import account_activation_token
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
-
+from .fileAgent import constructFile
 # Create your views here.
 
 def index(request):
@@ -223,6 +223,28 @@ def model_form_upload(request, pk=None):
             return redirect(animal.get_absolute_url())
 
     return HttpResponseNotFound()
+
+def animal_download(request, pk=None):
+    if request.method == 'GET':
+        animal = None
+        query = Individual.objects.filter(ID=pk)
+        if query.exists():
+            animal = query.get()
+        if animal is None:
+            return HttpResponseNotFound()
+
+        fileName = animal.ENAR + ".xls"
+        filePath = os.path.join(settings.MEDIA_ROOT,fileName)
+        fileURL = os.path.join(settings.MEDIA_URL,fileName)
+        constructFile(filePath,animal)
+        with open(filePath, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
+        print(response)
+
+        return response
+
+    return HttpResponseForbidden()
 
 def delete_image(request, pk):
     if request.method == 'GET':

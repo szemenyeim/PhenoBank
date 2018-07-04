@@ -179,6 +179,12 @@ class Individual(models.Model):
         """
         return reverse('individual-edit', args=[str(self.ID)])
 
+    def get_download_url(self):
+        """
+        Returns the url to access a detail record for this book.
+        """
+        return reverse('individual-download', args=[str(self.ID)])
+
 
 class Image(models.Model):
 

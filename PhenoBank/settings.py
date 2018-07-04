@@ -136,4 +136,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 UPLOAD_URL = '/upload/'
 UPLOAD_ROOT = os.path.join(BASE_DIR, 'upload/')
 MEDIA_URL = '/CACHE/'
-MEDIAD_ROOT = os.path.join(BASE_DIR, 'CACHE/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'CACHE/')
