@@ -1,0 +1,60 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+    {{ formset.management_form }}
+    {{ formset.non_form_errors.as_ul }}
+        <table>
+        {% for formerror in formsanderrors %}
+          <tr>
+          {% for field in formerror.0.visible_fields %}
+            <td>
+            {# Include the hidden fields in the form #}
+            {% if forloop.first %}
+              {% for hidden in formerror.0.hidden_fields %}
+              {{ hidden }}
+              {% endfor %}
+            {% endif %}
+              {{ field.errors.as_ul }}
+                {% for error in formerror.1.values %}
+                    {{ error }}
+                {% endfor %}
+              {{ field.label }}
+              {{ field }}
+            </td>
+          {% endfor %}
+          </tr>
+        {% endfor %}
+        </table>
+    <input type="submit" value="Search"/>
+    </form>
+        <table>
+            <tr>
+                {% for h in header %}
+                    <td><strong>{{ h }}</strong></td>
+                {% endfor %}
+            </tr>
+            {% for obj in animals %}
+            <tr>
+                <td><a href="{{ obj.get_absolute_url }}" style="display:block;">{{ obj.0.ENAR }}</a></td>
+                <td>{{ obj.0.Name }}</td>
+                <td>{{ obj.0.location }}</td>
+                <td>{{ obj.0.species }}</td>
+                <td>{{ obj.0.subspecies }}</td>
+                <td>{{ obj.0.gender }}</td>
+                <td>{{ obj.0.date }}</td>
+                {% for prop in obj.1 %}
+                    <td>
+                        {% if prop.parent.type == 'F' %}
+                            {{prop.numVal}}
+                        {% else %}
+                            {{prop.textVal}}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+{% endblock %}

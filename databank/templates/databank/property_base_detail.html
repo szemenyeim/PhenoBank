@@ -17,7 +17,7 @@
                 {% endrecursetree %}
             </ul>
 
-            <form action="../../properties/new">
+            <form action="../properties/new">
                 <input type="submit" value="Add New Property" />
             </form>
 </div>
@@ -38,7 +38,16 @@
                     </li>
                   {% endfor %}
                 </ul>
-  {% endif %}
+              {% endif %}
+
+
+            <form action={{ property_base.get_search_url }}>
+                <input type="submit" value="Search" />
+            </form>
+
+            <form action={{ property_base.get_delete_url }}>
+                <input type="submit" value="Delete" />
+            </form>
 </div>
 </div>
 

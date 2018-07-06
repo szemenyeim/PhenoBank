@@ -2,6 +2,7 @@ from .models import Species, Subspecies, Location, Individual, Option, Property_
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound, HttpResponse
 from formtools.wizard.views import SessionWizardView
 import os
+from .forms import SearchFormSet
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,6 +15,8 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from .fileAgent import constructFile
+import json
+from django.db.models import Q
 # Create your views here.
 
 def index(request):
@@ -36,6 +39,97 @@ def index(request):
 
 from django.views import generic
 
+def getTree(animal, key, level):
+    data = []
+    if level > 3:
+        return None
+    leafs = animal.children.all() if key == 'descendants' else animal.parents.all()
+    print(leafs)
+    if leafs.count() == 0:
+        return None
+    for leaf in leafs:
+        leafData = {}
+        leafData['name'] = leaf.__str__()
+        leafData['link'] = leaf.get_absolute_url()
+        sub = getTree(leaf,key,level+1)
+        if sub:
+            leafData[key] = sub
+        data.append(leafData)
+    return data
+
+def generateFamilyJSON(animal):
+    data = {}
+    data['name'] = animal.__str__()
+    data['link'] = animal.get_absolute_url()
+    anc = getTree(animal,'ancestors',0)
+    if anc:
+        data['ancestors'] = anc
+    desc = getTree(animal,'descendants',0)
+    if desc:
+        data['descendants'] = desc
+    print(data)
+    with open(settings.MEDIA_ROOT + str(animal.ID) + ".json", "w+") as fp:
+        json_data = json.dump(data,fp)
+
+def getAnimalsForProperties(form):
+    props = []
+    species = None
+    for data in form.cleaned_data:
+        prop = data['prop']
+        if prop:
+            species = prop.species
+            if prop.type == 'T' and data['text'] != '':
+                props.append(Property.objects.filter(parent=prop,textVal__contains=data['text']))
+            elif prop.type == 'F':
+                qs = Property.objects.filter(parent=prop)
+                if data['numFrom'] is not None:
+                    qs.filter(numVal__gte=data['numFrom'])
+                if data['numTo'] is not None:
+                    qs.filter(numVal__lte=data['numTo'])
+                props.append(qs)
+            elif prop.type == 'C' and data['opt']:
+                props.append(Property.objects.filter(parent=prop,textVal=data['opt'].name))
+
+    if(len(props) == 0 or species is None):
+        return None
+
+    animals = Individual.objects.filter(species=species)
+    for qs in props:
+        animals = animals.filter(ID__in=qs.values('animal'))
+
+    return animals
+
+def searchProperty(request,pk):
+    property = get_object_or_404(Property_base,pk=pk)
+    prop_children = property.get_descendants(include_self=True).filter(~Q(type='N'))
+    header = ['ENAR','Name','Location','Species','Subspecies','Gender','Birt Date']
+    initial = []
+    propVals = []
+    formErrors = []
+    for prop in prop_children:
+        initial.append({'prop':prop})
+        header.append(prop.name)
+
+    if request.method == 'GET':
+        form = SearchFormSet(initial=initial)
+        animals = Individual.objects.filter(species=property.species)
+        formErrors = [None]*len(form.forms)
+        #return render(request, 'databank/search.html', {'formset':form,'animals':animals,'formsanderrors':zip(form.forms,[None]*len(form.forms))})
+    else:
+        form = SearchFormSet(request.POST)
+        formErrors = form.errors
+        animals = None
+        if form.is_valid():
+            animals = getAnimalsForProperties(form)
+
+    for animal in animals:
+        propVals.append(Property.objects.filter(animal=animal, parent__in=prop_children).order_by('parent__parent__name','parent__parent','parent__name'))
+
+    print(header)
+    print(propVals)
+    return render(request, 'databank/search.html', {'formset':form,'animals':zip(animals,propVals), 'header':header, 'formsanderrors':zip(form.forms,formErrors)})
+
+
 class IndividualListView(generic.ListView):
     model = Individual
     paginate_by = 100
@@ -49,6 +143,8 @@ class IndividualDetailView(generic.DetailView):
         extra_context = {'form': form }
         context = super(IndividualDetailView, self).get_context_data(**kwargs)
         context.update(extra_context)
+        animal = context['individual']
+        generateFamilyJSON(animal)
         return context
 
 class PropertyListView(generic.ListView):
@@ -99,6 +195,7 @@ class PropertyWizard(SessionWizardView):
             species = data['species'],
             parent = data['parent'],
             type = data['type'],
+            owner = self.request.user,
         )
         print(data['type'])
         if( data['type'] == 'F' ):
@@ -120,11 +217,6 @@ class PropertyWizard(SessionWizardView):
                 animal = individual
             )
         return HttpResponseRedirect('../../properties/')
-
-class MyCollection(list):
-    def __init__(self, *args, **kwargs):
-        super(MyCollection, self).__init__( *args, **kwargs)
-    ordered = True
 
 class IndividualWizard(SessionWizardView):
 
@@ -240,9 +332,26 @@ def animal_download(request, pk=None):
         with open(filePath, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
-        print(response)
 
         return response
+
+    return HttpResponseForbidden()
+
+def property_delete(request, pk=None):
+    if request.method == 'GET':
+        property = None
+        query = Property_base.objects.filter(ID=pk)
+        if query.exists():
+            property = query.get()
+        if property is None:
+            return HttpResponseNotFound()
+        if property.owner != request.user:
+            return HttpResponseForbidden()
+
+        parent = property.parent
+        property.delete()
+
+        return redirect(parent.get_absolute_url())
 
     return HttpResponseForbidden()
 

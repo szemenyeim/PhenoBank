@@ -2,7 +2,7 @@ from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from .forms import PropertyMain, PropertyChoice, PropertyNumeric, IndividualMain, PropertyFormSet, SpeciesSelector
-from .views import PropertyWizard, isNumber, isMulti, IndividualWizard, model_form_upload, delete_image, animal_download
+from .views import PropertyWizard, isNumber, isMulti, IndividualWizard, model_form_upload, delete_image, animal_download, property_delete, searchProperty
 from .filters import IndividualFilter
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -18,6 +18,8 @@ urlpatterns = [
     path(r'individual/download/(?P<pk>\d+)$', login_required(animal_download), name='individual-download'),
     path('properties/', login_required(views.PropertyListView.as_view()), name='properties'),
     path(r'property/(?P<pk>\d+)$', login_required(views.PropertyDetailView.as_view()), name='property-detail'),
+    path(r'search/(?P<pk>\d+)$', login_required(searchProperty), name='search'),
+    path(r'property/delete/(?P<pk>\d+)$', login_required(property_delete), name='property-delete'),
     path('properties/new/', staff_member_required(PropertyWizard.as_view(property_forms,
         condition_dict={'2': isMulti, '3': isNumber}
     ))),

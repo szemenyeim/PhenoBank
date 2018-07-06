@@ -90,6 +90,8 @@ class Property_base(MPTTModel):
     species = models.ForeignKey('Species', on_delete=models.CASCADE, null=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
     class MPTTMeta:
         order_insertion_by = ["name", "type", "species", "parent"]
 
@@ -105,6 +107,18 @@ class Property_base(MPTTModel):
         Returns the url to access a detail record for this book.
         """
         return reverse('property-detail', args=[str(self.ID)])
+
+    def get_search_url(self):
+        """
+        Returns the url to access a detail record for this book.
+        """
+        return reverse('search', args=[str(self.ID)])
+
+    def get_delete_url(self):
+        """
+        Returns the url to access a detail record for this book.
+        """
+        return reverse('property-delete', args=[str(self.ID)])
 
 class Option(models.Model):
     """
@@ -212,7 +226,7 @@ class Property(models.Model):
     animal = models.ForeignKey('Individual', on_delete=models.CASCADE, null=True, related_name='properties')
 
     class Meta:
-        ordering = ["animal","parent"]
+        ordering = ["parent__parent","parent__name"]
 
 
     def __str__(self):

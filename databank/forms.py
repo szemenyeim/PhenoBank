@@ -216,41 +216,67 @@ class IndividualMain(forms.ModelForm):
             raise ValidationError("Parents must be a different gender")
         return parents
 
-class IndividualProperties(forms.Form):
+class PropertySearchForm(forms.Form):
 
-    data = None
-    formIdxStr = ""
-
-    def getInitial(self,name):
-        return self.data[self.formIdxStr+name] if self.data else None
+    prop = forms.ModelChoiceField(queryset=Property_base.objects.all(), widget=forms.HiddenInput, required=False)
+    text = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput)
+    numFrom = forms.FloatField(required=False, widget=forms.HiddenInput)
+    numTo = forms.FloatField(required=False, widget=forms.HiddenInput)
+    opt = forms.ModelChoiceField(queryset=Option.objects.all(),required=False, widget=forms.HiddenInput)
 
 
     def __init__(self, *args, **kwargs):
-        species = kwargs.pop('species')
-        modify = kwargs.pop('modify')
-        print(kwargs)
-        self.formIdxStr = "2-"
         super().__init__(*args, **kwargs)
-        if not species:
-            self.data = kwargs.pop('data')
-            species = self.data[self.formIdxStr+'species']
+        data = kwargs.get('data',None)
+        prefix = ""
+        if not data:
+            data = kwargs.get('initial',None)
+        else:
+            prefix = self.prefix + "-"
 
-        self.fields['species'] = forms.ModelChoiceField(queryset=Species.objects.all(), initial=species,
-                                                        widget=forms.HiddenInput)
-        properties = Property_base.objects._mptt_filter(species=species)
-        for property in properties:
+
+        if data:
+            property = data.get(prefix+'prop',None)
+            if not property:
+                return
+            if prefix != "":
+                property = Property_base.objects.get(pk=property)
+
+            self.fields['prop'] = forms.ModelChoiceField(queryset=Property_base.objects.all(), initial=property,
+                                                            widget=forms.HiddenInput)
+
             name = property.name
             type = property.type
-            if type == 'N':
-                self.fields[name] = forms.CharField(max_length=0, disabled=True, show_hidden_initial=True,
-                                                    widget=NameOnlyWidget, required=False)
-            elif type == 'T':
-                self.fields[name] = forms.CharField(max_length=100, required=True, initial=self.getInitial(name))
+
+            if type == 'T':
+                self.fields['text'] = forms.CharField(max_length=100, label=name, required=False, widget=forms.TextInput, initial=data.get(prefix+'text',None))
             elif type == 'F':
-                self.fields[name] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal,
-                                                     required=True, initial=self.getInitial(name))
+                self.fields['numFrom'] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal, label=name + " From:",
+                                                     required=False, widget=forms.NumberInput, initial=data.get(prefix+'numFrom',None))
+                self.fields['numTo'] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal, label="To:",
+                                                     required=False, widget=forms.NumberInput, initial=data.get(prefix+'numTo',None))
             elif type == 'C':
                 options = Option.objects.filter(property=property)
-                self.fields[name] = forms.ModelChoiceField(queryset=options, required=True, initial=self.getInitial(name))
+                self.fields['opt'] = forms.ModelChoiceField(queryset=options, label=name, required=False, widget=forms.Select, initial=data.get(prefix+'opt',None))
 
+    def clean(self):
+        data = self.cleaned_data
+        f = data.get('numFrom',None)
+        t = data.get('numTo',None)
+        if f is not None and t is not None and t < f:
+            raise ValidationError("The from value is higher than the t value")
+        return data
 
+BaseSearchFormSet = forms.formset_factory(PropertySearchForm, extra=0)
+
+class SearchFormSet(BaseSearchFormSet):
+    def __init__(self, *args, **kwargs):
+        #  create a user attribute and take it out from kwargs
+        # so it doesn't messes up with the other formset kwargs
+        super(SearchFormSet, self).__init__(*args, **kwargs)
+        for form in self.forms:
+            form.empty_permitted = False
+
+    def get_form_kwargs(self, index):
+        form_kwargs = super(SearchFormSet, self).get_form_kwargs(index)
+        return form_kwargs
