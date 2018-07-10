@@ -2,6 +2,10 @@
 
 {% block content %}
 
+<h1>Search</h1>
+
+<p>Use this form to filter animals based on these properties</p>
+
 <form action="" method="post" enctype="multipart/form-data">
   {% csrf_token %}
     {{ formset.management_form }}
@@ -30,6 +34,8 @@
         </table>
     <input type="submit" value="Search"/>
     </form>
+
+<h3>Results: </h3>
         <table>
             <tr>
                 {% for h in header %}

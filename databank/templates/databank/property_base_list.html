@@ -2,6 +2,7 @@
 
 {% block content %}
     <h3>Properties</h3>
+    <p>To search based on a specific property and its children, please, click on the property, then click search.</p>
 
     {% load mptt_tags %}
     <ul>
@@ -17,8 +18,8 @@
         {% endrecursetree %}
     </ul>
 
-            <form action="../properties/new">
+            <p><form action="../properties/new">
                 <input type="submit" value="Add New Property" />
-            </form>
+            </form></p>
 
 {% endblock %}

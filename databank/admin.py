@@ -1,9 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Location, Species, Individual, Subspecies, Option, Property_base, Property, Profile, Image
+from .models import Species, Individual, Subspecies, Option, Property_base, Property, Profile, Image
 
-admin.site.register(Location)
 admin.site.register(Species)
 admin.site.register(Subspecies)
 admin.site.register(Option)

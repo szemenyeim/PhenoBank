@@ -1,14 +1,21 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
+    <h3>Filter Individuals</h3>
+    <p>To search based on specific properties, please go to the <a href="../properties">properties page</a>.</p>
     <form action="" method="get">
-        {% for field in filter.form %}
-            <td>  {{ field.label }} </td><td> {{ field }} </td>
-        {% endfor %}
-        <td><input type="submit" /></td>
-        </tr>
+        <table>
+            {% for field in filter.form %}
+            <tr>
+                <td>  {{ field.label }} </td><td> {{ field }} </td>
+            </tr>
+            {% endfor %}
+            <tr>
+            <td><input type="submit" /></td>
+            </tr>
         </table>
     </form>
+    <h3>Results: </h3>
         <table>
             <tr>
                 <td><strong>ENAR</strong></td>
@@ -31,7 +38,7 @@
             </tr>
             {% endfor %}
         </table>
-<form action="../individuals/new">
+<p><form action="../individuals/new">
     <input type="submit" value="Add New Individual" />
-</form>
+</form></p>
 {% endblock %}

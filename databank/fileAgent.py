@@ -1,4 +1,4 @@
-from .models import Individual, Property_base, Property, Location, Species, Subspecies, Option
+from .models import Individual, Property_base, Property, Species, Subspecies, Option
 import xlwt
 
 def constructFile(path, animal):
@@ -19,7 +19,7 @@ def constructFile(path, animal):
     ws.write(4,0,"Gender:",style0)
     ws.write(4,1,animal.gender)
     ws.write(5,0,"Location:",style0)
-    ws.write(5,1,animal.location.__str__())
+    ws.write(5,1,animal.location)
     ws.write(6,0,"Birth Date:",style0)
     ws.write(6,1,animal.date,style1)
 

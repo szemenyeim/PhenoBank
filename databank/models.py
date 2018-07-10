@@ -54,22 +54,7 @@ class Subspecies(models.Model):
         """
         String for representing the Model object (in Admin site etc.)
         """
-        return self.name
-
-class Location(models.Model):
-    """
-    Model representing a location.
-    """
-    name = models.CharField(max_length=200, help_text="Enter the location name")
-
-    class Meta:
-        ordering = ["name"]
-
-    def __str__(self):
-        """
-        String for representing the Model object (in Admin site etc.)
-        """
-        return self.name
+        return self.species.name + "/" + self.name
 
 class Property_base(MPTTModel):
     """
@@ -85,9 +70,10 @@ class Property_base(MPTTModel):
         ('C', 'Choice'),
     )
     type = models.CharField(max_length=1,choices=TYPE_CHOICES)
-    maxVal = models.FloatField(help_text="Enter the maximal value of the numerical option",default=1.0)
-    minVal = models.FloatField(help_text="Enter the minimal value of the numerical option",default=0.0)
+    maxVal = models.FloatField(help_text="Enter the maximal value of the numerical option",null=True, blank=True)
+    minVal = models.FloatField(help_text="Enter the minimal value of the numerical option",null=True, blank=True)
     species = models.ForeignKey('Species', on_delete=models.CASCADE, null=True)
+    description = models.CharField(max_length = 1000, null=True, blank=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -120,6 +106,10 @@ class Property_base(MPTTModel):
         """
         return reverse('property-delete', args=[str(self.ID)])
 
+    def get_type_str(self):
+        TYPE_NAMES = {'N':"Node",'C':"Multiple Choice", 'F':"Number",'T':"Text"}
+        return TYPE_NAMES[self.type]
+
 class Option(models.Model):
     """
     Model representing a option.
@@ -148,7 +138,7 @@ class Individual(models.Model):
     ENAR = models.CharField('ENAR ID', max_length=10, help_text='ENAR ID')
     Name = models.CharField('Name', max_length=100, help_text='Name')
 
-    location = models.ForeignKey('location', on_delete=models.SET_NULL, null=True, help_text="Birth Location")
+    location = models.CharField('location', max_length=100, null=True, help_text="Birth Location")
     date = models.DateField( help_text='Birth Date', null=True)
     species = models.ForeignKey('Species', on_delete=models.SET_NULL, null=True)
     subspecies = models.ForeignKey('Subspecies', on_delete=models.SET_NULL, null=True)

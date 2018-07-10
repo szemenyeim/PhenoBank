@@ -3,6 +3,8 @@
 <div id="parent">
 <div style="width: 50%; height: 50%; float:left;">
             <h3>Properties</h3>
+             <p>To search based on a specific property and its children, please, click on the property, then click search.</p>
+
             {% load mptt_tags %}
             <ul>
                 {% recursetree property_base_list %}
@@ -17,15 +19,19 @@
                 {% endrecursetree %}
             </ul>
 
-            <form action="../properties/new">
+            <p><form action="../properties/new">
                 <input type="submit" value="Add New Property" />
-            </form>
+            </form></p>
 </div>
 <div style="width: 50%; height: 50%; float:right;">
-               <h3>Name: {{ property_base.name }}</h3>
+
+            <h3>Property:</h3>
+               <p><strong>Name:</strong> {{ property_base.name }}</p>
+
+                <p>{{ property_base.description }}</p>
 
               <p><strong>Species:</strong> {{ property_base.species }}</p>
-              <p><strong>Type:</strong> {{ property_base.type }}</p>
+              <p><strong>Type:</strong> {{ property_base.get_type_str }}</p>
               {% if property_base.type == "F" %}
                 <p><strong>Max:</strong> {{ property_base.maxVal }}</p>
                 <p><strong>Min:</strong> {{ property_base.minVal }}</p>
@@ -41,13 +47,13 @@
               {% endif %}
 
 
-            <form action={{ property_base.get_search_url }}>
+            <p><form action={{ property_base.get_search_url }}>
                 <input type="submit" value="Search" />
-            </form>
+            </form></p>
 
-            <form action={{ property_base.get_delete_url }}>
+            <p><form action={{ property_base.get_delete_url }}>
                 <input type="submit" value="Delete" />
-            </form>
+            </form></p>
 </div>
 </div>
 

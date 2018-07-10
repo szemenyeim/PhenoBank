@@ -1,5 +1,5 @@
 from django import forms
-from .models import Property_base, Individual, Location, Species, Subspecies, Option, Property, Image
+from .models import Property_base, Individual, Species, Subspecies, Option, Property, Image
 from django.forms.utils import flatatt
 from django.utils.safestring import mark_safe
 from django.contrib.auth.forms import UserCreationForm
@@ -120,6 +120,7 @@ class PropertyMain(forms.Form):
     type = forms.ChoiceField(choices=TYPE_CHOICES, required=True)
     parent = forms.ModelChoiceField(Property_base.objects._mptt_filter(type='N'),required=True)
     species = forms.ModelChoiceField(Species.objects.all(),required=False,widget=forms.HiddenInput)
+    description = forms.CharField(max_length=1000,required=False,widget=forms.Textarea)
 
     def __init__(self, *args, **kwargs):
         species = kwargs.pop('species')
@@ -172,7 +173,7 @@ class IndividualMain(forms.ModelForm):
     ENAR = forms.CharField(max_length=10, required=True)
     Name = forms.CharField(max_length=100, required=True)
 
-    location = forms.ModelChoiceField(queryset=Location.objects.all(), required=True)
+    location = forms.CharField(max_length=100, required=True)
     subspecies = forms.ModelChoiceField(queryset=Subspecies.objects.all(), required=True)
 
     date = forms.DateField(widget = forms.SelectDateWidget(),required=True)

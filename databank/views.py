@@ -1,4 +1,4 @@
-from .models import Species, Subspecies, Location, Individual, Option, Property_base, Property, Image
+from .models import Species, Subspecies, Individual, Option, Property_base, Property, Image
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound, HttpResponse
 from formtools.wizard.views import SessionWizardView
 import os
@@ -27,14 +27,12 @@ def index(request):
     num_phenomes = Individual.objects.all().count()
     # Available books (status = 'a')
     num_species = Species.objects.count()  # The 'all()' is implied by default.
-    num_locations = Location.objects.count()  # The 'all()' is implied by default.
 
     # Render the HTML template index.html with the data in the context variable
     return render(
         request,
         'index.html',
-        context={'num_phenomes': num_phenomes, 'num_species': num_species,
-                 'num_locations': num_locations},
+        context={'num_phenomes': num_phenomes, 'num_species': num_species},
     )
 
 from django.views import generic
@@ -195,6 +193,7 @@ class PropertyWizard(SessionWizardView):
             species = data['species'],
             parent = data['parent'],
             type = data['type'],
+            description=data['description'],
             owner = self.request.user,
         )
         print(data['type'])
