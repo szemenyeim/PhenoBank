@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ac17757f-263f-42cc-8c57-eba2e9a66c86" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PhenoBank/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/PhenoBank/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/databank/templates/databank/individual_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/databank/templates/databank/individual_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/databank/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/databank/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/databank/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/databank/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,7 +13,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/databank/views.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="153">
@@ -26,11 +22,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PhenoBank/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2414">
-              <caret line="143" column="40" selection-start-line="143" selection-start-column="40" selection-end-line="143" selection-end-column="40" />
+            <state relative-caret-position="268">
+              <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -193,8 +189,8 @@
         <option value="$PROJECT_DIR$/databank/templates/databank/individual_filter.html" />
         <option value="$PROJECT_DIR$/databank/urls.py" />
         <option value="$PROJECT_DIR$/databank/templates/databank/individual_detail.html" />
-        <option value="$PROJECT_DIR$/PhenoBank/settings.py" />
         <option value="$PROJECT_DIR$/databank/views.py" />
+        <option value="$PROJECT_DIR$/PhenoBank/settings.py" />
       </list>
     </option>
   </component>
@@ -554,16 +550,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/databank/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="39" column="85" selection-start-line="39" selection-start-column="85" selection-end-line="39" selection-end-column="85" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/databank/templates/databank/property_base_detail.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="74">
@@ -588,10 +574,13 @@
     <entry file="file://$PROJECT_DIR$/PhenoBank/key">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/PhenoBank/settings.py">
+    <entry file="file://$PROJECT_DIR$/databank/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2414">
-          <caret line="143" column="40" selection-start-line="143" selection-start-column="40" selection-end-line="143" selection-end-column="40" />
+        <state relative-caret-position="510">
+          <caret line="39" column="85" selection-start-line="39" selection-start-column="85" selection-end-line="39" selection-end-column="85" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -599,6 +588,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="70" selection-start-line="9" selection-start-column="70" selection-end-line="9" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PhenoBank/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
         </state>
       </provider>
     </entry>
