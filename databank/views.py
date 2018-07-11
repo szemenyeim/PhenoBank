@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.encoding import force_bytes,smart_str
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .forms import SignUpForm, ImageForm
 from .tokens import account_activation_token
@@ -42,7 +42,6 @@ def getTree(animal, key, level):
     if level > 3:
         return None
     leafs = animal.children.all() if key == 'descendants' else animal.parents.all()
-    print(leafs)
     if leafs.count() == 0:
         return None
     for leaf in leafs:
@@ -65,7 +64,6 @@ def generateFamilyJSON(animal):
     desc = getTree(animal,'descendants',0)
     if desc:
         data['descendants'] = desc
-    print(data)
     with open(settings.MEDIA_ROOT + str(animal.ID) + ".json", "w+") as fp:
         json_data = json.dump(data,fp)
 
@@ -123,8 +121,6 @@ def searchProperty(request,pk):
     for animal in animals:
         propVals.append(Property.objects.filter(animal=animal, parent__in=prop_children).order_by('parent__parent__name','parent__parent','parent__name'))
 
-    print(header)
-    print(propVals)
     return render(request, 'databank/search.html', {'formset':form,'animals':zip(animals,propVals), 'header':header, 'formsanderrors':zip(form.forms,formErrors)})
 
 
@@ -196,7 +192,6 @@ class PropertyWizard(SessionWizardView):
             description=data['description'],
             owner = self.request.user,
         )
-        print(data['type'])
         if( data['type'] == 'F' ):
             prop.minVal = data['minVal']
             prop.maxVal = data['maxVal']

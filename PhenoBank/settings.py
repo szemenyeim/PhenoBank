@@ -135,6 +135,13 @@ EMAIL_HOST_USER = 'szemenyeim@gmail.com'
 EMAIL_HOST_PASSWORD = '' #Check the update part
 EMAIL_PORT = 587
 
+fname = "./PhenoBank/key"
+try:
+    with open(fname) as fp:
+        EMAIL_HOST_PASSWORD = fp.read()
+except IOError:
+    print("Could not read file:", fName)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATIC_URL = '/static/'

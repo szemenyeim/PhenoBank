@@ -35,6 +35,16 @@
 
     </table>
 
+<p>
+<form action="{{ individual.get_edit_url }}">
+    <input type="submit" value="Modify" />
+</form></p>
+
+<p>
+<form action="{{ individual.get_download_url }}">
+    <input type="submit" value="Download" />
+</form></p>
+
   <p><strong>Family:</strong></p>
 
     <div id="chart"></div>
@@ -227,13 +237,5 @@
 
 
     </script>
-
-<form action="{{ individual.get_edit_url }}">
-    <input type="submit" value="Modify" />
-</form>
-
-<form action="{{ individual.get_download_url }}">
-    <input type="submit" value="Download" />
-</form>
 
 {% endblock %}
