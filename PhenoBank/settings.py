@@ -149,7 +149,7 @@ try:
     with open(fname) as fp:
         EMAIL_HOST_PASSWORD = fp.read()
 except IOError:
-    print("Could not read file:", fName)
+    print("Could not read file:", fname)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
