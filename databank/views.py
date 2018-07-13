@@ -283,12 +283,6 @@ class IndividualWizard(SessionWizardView):
                         for prop in props:
                             prop.animal=animal
                             prop.save()
-        data = self.get_all_cleaned_data()
-        if data['images']:
-            Image.objects.create(
-                animal=animal,
-                image=data['images']
-            )
         prefix = "../../../" if self.isModify() else "../../"
         return HttpResponseRedirect(prefix + "individuals")
 
