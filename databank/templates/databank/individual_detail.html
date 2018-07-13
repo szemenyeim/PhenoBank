@@ -105,7 +105,7 @@
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    d3.json("/CACHE/{{individual.ID}}.json", function(json) {
+    d3.json("{{ root }}{{individual.ID}}.json", function(json) {
       root = json;
       root.x0 = height / 2;
       root.y0 = width / 2;

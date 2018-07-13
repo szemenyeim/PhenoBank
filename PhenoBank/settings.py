@@ -29,7 +29,7 @@ except ImportError:
     from .secret_key import SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['sleepy-stream-38361.herokuapp.com','127.0.0.1']
 if not DEBUG:

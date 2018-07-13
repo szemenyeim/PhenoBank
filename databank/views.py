@@ -64,6 +64,8 @@ def generateFamilyJSON(animal):
     desc = getTree(animal,'descendants',0)
     if desc:
         data['descendants'] = desc
+    if not os.path.exists(settings.MEDIA_ROOT):
+        os.mkdir(settings.MEDIA_ROOT)
     with open(settings.MEDIA_ROOT + str(animal.ID) + ".json", "w+") as fp:
         json_data = json.dump(data,fp)
 
@@ -134,7 +136,7 @@ class IndividualDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         form = ImageForm()
-        extra_context = {'form': form }
+        extra_context = {'form': form, 'root': settings.MEDIA_ROOT }
         context = super(IndividualDetailView, self).get_context_data(**kwargs)
         context.update(extra_context)
         animal = context['individual']
@@ -275,9 +277,11 @@ class IndividualWizard(SessionWizardView):
                     form.save()
                 else:
                     if i == 1:
+                        print(form)
                         animal = form.save(commit=False)
                         animal.owner = self.request.user
                         animal.save()
+                        form.save_m2m()
                     elif i > 1:
                         props = form.save(commit=False)
                         for prop in props:
