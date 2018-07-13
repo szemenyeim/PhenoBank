@@ -29,7 +29,7 @@ except ImportError:
     from .secret_key import SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['sleepy-stream-38361.herokuapp.com','127.0.0.1']
 if not DEBUG:
@@ -155,11 +155,11 @@ except IOError:
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/').replace("\\","/")
 UPLOAD_URL = '/upload/'
-UPLOAD_ROOT = os.path.join(BASE_DIR, 'upload/')
+UPLOAD_ROOT = os.path.join(BASE_DIR, 'upload/').replace("\\","/")
 MEDIA_URL = '/CACHE/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'CACHE/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'CACHE/').replace("\\","/")
 
 # Heroku: Update database configuration from $DATABASE_URL.
 import dj_database_url
