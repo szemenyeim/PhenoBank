@@ -280,3 +280,4 @@ class SearchFormSet(BaseSearchFormSet):
     def get_form_kwargs(self, index):
         form_kwargs = super(SearchFormSet, self).get_form_kwargs(index)
         return form_kwargs
+
