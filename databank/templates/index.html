@@ -9,4 +9,23 @@
 
   <p>Our database currently has {{ num_phenomes }} phenomes of {{ num_species }} species.</p>
 
+<h3>Species:</h3>
+
+    {% if pk %}
+        <p>Selected species: {{ name }}</p>
+    {% else %}
+        <p>You need to select a species to continue!</p>
+    {% endif %}
+
+<table>
+    {% for spec in species %}
+        <tr>
+            <td><figure>
+                <a href="spec/{{ spec.pk }}"><img src="../CACHE/{{ spec.image }}"></a>
+                <figcaption >{{ spec.name }}</figcaption>
+            </figure></td>
+        </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}

@@ -161,9 +161,6 @@ class PropertyChoice(forms.Form):
     opt9 = forms.CharField(max_length=100, required=False)
     opt10 = forms.CharField(max_length=100, required=False)
 
-class SpeciesSelector(forms.Form):
-    species = forms.ModelChoiceField(queryset=Species.objects.all(),required=True)
-
 class IndividualMain(forms.ModelForm):
     class Meta:
         model = Individual

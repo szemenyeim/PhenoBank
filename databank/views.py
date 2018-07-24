@@ -2,6 +2,7 @@ from .models import Species, Subspecies, Individual, Option, Property_base, Prop
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponseNotFound, HttpResponse
 from formtools.wizard.views import SessionWizardView
 import os
+from .filters import IndividualFilter
 from .forms import SearchFormSet
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -28,12 +29,21 @@ def index(request):
     # Available books (status = 'a')
     num_species = Species.objects.count()  # The 'all()' is implied by default.
 
+    species = Species.objects.all()
+
+    currSpec = species.filter(pk=request.session.get('species'))
+    currSpec = currSpec.get().name if len(currSpec) else None
+
     # Render the HTML template index.html with the data in the context variable
     return render(
         request,
         'index.html',
-        context={'num_phenomes': num_phenomes, 'num_species': num_species},
+        context={'num_phenomes': num_phenomes, 'num_species': num_species, 'species':species, 'pk':request.session.get('species'), 'name':currSpec},
     )
+
+def speciesSelector(request,pk):
+    request.session['species'] = pk
+    return HttpResponseRedirect('/')
 
 from django.views import generic
 
@@ -81,9 +91,9 @@ def getAnimalsForProperties(form):
             elif prop.type == 'F':
                 qs = Property.objects.filter(parent=prop)
                 if data['numFrom'] is not None:
-                    qs.filter(numVal__gte=data['numFrom'])
+                    qs = qs.filter(numVal__gte=data['numFrom'])
                 if data['numTo'] is not None:
-                    qs.filter(numVal__lte=data['numTo'])
+                    qs = qs.filter(numVal__lte=data['numTo'])
                 props.append(qs)
             elif prop.type == 'C' and data['opt']:
                 props.append(Property.objects.filter(parent=prop,textVal=data['opt'].name))
@@ -100,7 +110,7 @@ def getAnimalsForProperties(form):
 def searchProperty(request,pk):
     property = get_object_or_404(Property_base,pk=pk)
     prop_children = property.get_descendants(include_self=True).filter(~Q(type='N'))
-    header = ['ENAR','Name','Location','Species','Subspecies','Gender','Birt Date']
+    header = ['ENAR','Name','Location','Subspecies','Gender','Birt Date']
     initial = []
     propVals = []
     formErrors = []
@@ -125,10 +135,9 @@ def searchProperty(request,pk):
 
     return render(request, 'databank/search.html', {'formset':form,'animals':zip(animals,propVals), 'header':header, 'formsanderrors':zip(form.forms,formErrors)})
 
-
-class IndividualListView(generic.ListView):
-    model = Individual
-    paginate_by = 100
+def individual_list(request):
+    f = IndividualFilter(request.GET, queryset=Individual.objects.filter(species=request.session.get('species')))
+    return render(request, 'databank/individual_filter.html', {'filter': f})
 
 class IndividualDetailView(generic.DetailView):
     model = Individual
@@ -146,6 +155,9 @@ class IndividualDetailView(generic.DetailView):
 class PropertyListView(generic.ListView):
     model = Property_base
     paginate_by = 100
+
+    def get_queryset(self):
+        return Property_base.objects.filter(species=self.request.session.get('species'))
 
 class PropertyDetailView(generic.DetailView):
     model = Property_base
@@ -168,21 +180,20 @@ def isMulti(wizard):
 
 class PropertyWizard(SessionWizardView):
 
-    species = None
-
     def get_form_kwargs(self, step):
-        if step == '1':
-            return {'species' : self.species}
+        if step == '0':
+            return {'species' : self.request.session.get('species')}
         return {}
 
     def get_template_names(self):
         return "databank/property_form.html"
 
-    def process_step(self, form):
-        formData = self.get_form_step_data(form)
-        if self.steps.current == '0':
-            self.species = formData.get('0-species')
-        return formData
+
+    def render(self, form=None, **kwargs):
+        if self.request.session.get('species'):
+            return super(PropertyWizard, self).render(form, **kwargs)
+        else:
+            return HttpResponseRedirect('/')
 
     def done(self, form_list, **kwargs):
         data = self.get_all_cleaned_data()
@@ -233,26 +244,24 @@ class IndividualWizard(SessionWizardView):
     def render(self, form=None, **kwargs):
         if self.isModify() and self.getAnimal().owner != self.request.user:
             return HttpResponseForbidden()
-        return super(IndividualWizard, self).render(form, **kwargs)
+        if self.request.session.get('species'):
+            return super(IndividualWizard, self).render(form, **kwargs)
+        else:
+            return HttpResponseRedirect('/')
 
     def get_template_names(self):
         return "databank/property_form.html"
 
     def get_form_kwargs(self, step):
-        if step == '1' or step == '2':
-            return {'species' : self.getSpecies(),'modify' : self.isModify()}
-        return {}
+        return {'species' : self.getSpecies(),'modify' : self.isModify()}
 
     def getSpecies(self):
-        if not self.isModify():
-            return self.get_cleaned_data_for_step('0')['species']
-        else:
-            return self.getAnimal().species
+        return self.request.session.get('species')
 
     def get_form_instance(self, step):
-        if self.isModify() and step == '1':
+        if self.isModify() and step == '0':
             return self.getAnimal()  # do NOT set self.instance, just return the model instance you want
-        if step == '2':
+        if step == '1':
             if self.isModify():
                 return Property.objects.filter(animal=self.getAnimal()).order_by('parent')
             else:
@@ -260,7 +269,7 @@ class IndividualWizard(SessionWizardView):
         return self.instance_dict.get(step, None)  # the default implementation
 
     def get_form_initial(self, step):
-        if step == '2' and not self.isModify():
+        if step == '1' and not self.isModify():
             props = Property_base.objects._mptt_filter(species=self.getSpecies())
             animal = self.getAnimal()
             initial = []

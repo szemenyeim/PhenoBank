@@ -13,7 +13,6 @@ class IndividualFilter(django_filters.FilterSet):
             'ENAR': 'ENAR',
             'Name': 'Name',
             'Location': 'location',
-            'Species': 'species',
             'Sub Species': 'subspecies',
             'Gender': 'gender',
             'Birth Date': 'date',
@@ -22,7 +21,6 @@ class IndividualFilter(django_filters.FilterSet):
             'ENAR': 'ENAR',
             'Name': 'Name',
             'Location': 'Location',
-            'Species': 'Species',
             'Sub Species': 'Sub Species',
             'Gender': 'Gender',
             'Birth Date': 'Birth Date',
@@ -31,4 +29,4 @@ class IndividualFilter(django_filters.FilterSet):
 
     class Meta:
         model = Individual
-        fields = ['Name','ENAR','location','species','subspecies','gender']
+        fields = ['Name','ENAR','location','subspecies','gender']
