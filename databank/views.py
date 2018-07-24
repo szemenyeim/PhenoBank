@@ -133,7 +133,7 @@ def searchProperty(request,pk):
     for animal in animals:
         propVals.append(Property.objects.filter(animal=animal, parent__in=prop_children).order_by('parent__parent__name','parent__parent','parent__name'))
 
-    return render(request, 'databank/search.html', {'formset':form,'animals':zip(animals,propVals), 'header':header, 'formsanderrors':zip(form.forms,formErrors)})
+    return render(request, 'databank/search.html', {'formset':form,'animals':list(zip(animals,propVals)), 'header':header, 'formsanderrors':zip(form.forms,formErrors)})
 
 def individual_list(request):
     f = IndividualFilter(request.GET, queryset=Individual.objects.filter(species=request.session.get('species')))
@@ -163,7 +163,7 @@ class PropertyDetailView(generic.DetailView):
     model = Property_base
     def get_context_data(self, *args, **kwargs):
         context = super(PropertyDetailView, self).get_context_data(*args, **kwargs)
-        context['property_base_list'] = Property_base.objects.all()
+        context['property_base_list'] = Property_base.objects.filter(species=self.request.session.get('species'))
         return context
 
 def isNumber(wizard):
@@ -285,13 +285,13 @@ class IndividualWizard(SessionWizardView):
                 if self.isModify():
                     form.save()
                 else:
-                    if i == 1:
+                    if i == 0:
                         print(form)
                         animal = form.save(commit=False)
                         animal.owner = self.request.user
                         animal.save()
                         form.save_m2m()
-                    elif i > 1:
+                    elif i == 1:
                         props = form.save(commit=False)
                         for prop in props:
                             prop.animal=animal
