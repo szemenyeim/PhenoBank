@@ -2,7 +2,9 @@
 
 {% block content %}
     <h3>Filter Individuals</h3>
-    <p>To search based on specific properties, please go to the <a href="../properties">properties page</a>.</p>
+    <form action="../properties" method="get">
+        <button type="submit">Advanced Search</button>
+    </form>
     <form action="" method="get">
         <table>
             {% for field in filter.form %}
@@ -16,6 +18,7 @@
         </table>
     </form>
     <h3>Results: </h3>
+        {% if filter.qs.all %}
         <table>
             <tr>
                 <td><strong>ENAR</strong></td>
@@ -38,6 +41,9 @@
             </tr>
             {% endfor %}
         </table>
+        {% else %}
+            <p>No individuals found</p>
+        {% endif %}
 <p><form action="../individuals/new">
     <input type="submit" value="Add New Individual" />
 </form></p>

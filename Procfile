@@ -1,0 +1,1 @@
+web: gunicorn PhenoBank.wsgi --log-file -

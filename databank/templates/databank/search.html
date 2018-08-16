@@ -36,6 +36,7 @@
     </form>
 
 <h3>Results: </h3>
+    {% if animals %}
         <table>
             <tr>
                 {% for h in header %}
@@ -44,7 +45,7 @@
             </tr>
             {% for obj in animals %}
             <tr>
-                <td><a href="{{ obj.get_absolute_url }}" style="display:block;">{{ obj.0.ENAR }}</a></td>
+                <td><a href="{{ obj.0.get_absolute_url }}" style="display:block;">{{ obj.0.ENAR }}</a></td>
                 <td>{{ obj.0.Name }}</td>
                 <td>{{ obj.0.location }}</td>
                 <td>{{ obj.0.species }}</td>
@@ -63,4 +64,7 @@
             </tr>
             {% endfor %}
         </table>
+    {% else %}
+        <p>No individuals found</p>
+    {% endif %}
 {% endblock %}

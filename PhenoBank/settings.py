@@ -33,6 +33,10 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['152.66.240.18']
 
+<<<<<<< HEAD
+=======
+ALLOWED_HOSTS = ['sleepy-stream-38361.herokuapp.com','127.0.0.1']
+>>>>>>> 780c61cd458a84e70f1da507b699c070b3c91ed3
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -63,6 +67,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -155,8 +160,17 @@ except IOError:
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/').replace("\\","/")
 UPLOAD_URL = '/upload/'
-UPLOAD_ROOT = os.path.join(BASE_DIR, 'upload/')
+UPLOAD_ROOT = os.path.join(BASE_DIR, 'upload/').replace("\\","/")
 MEDIA_URL = '/CACHE/'
+<<<<<<< HEAD
 MEDIA_ROOT = os.path.join(BASE_DIR, 'CACHE/')
+=======
+MEDIA_ROOT = os.path.join(BASE_DIR, 'CACHE/').replace("\\","/")
+
+# Heroku: Update database configuration from $DATABASE_URL.
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+>>>>>>> 780c61cd458a84e70f1da507b699c070b3c91ed3

@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from captcha.fields import CaptchaField
 from django.core.exceptions import ValidationError
+import datetime
 
 class ImageForm(forms.ModelForm):
     animal = forms.ModelChoiceField(queryset=Individual.objects.all(), disabled=True, widget=forms.HiddenInput, required=False)
@@ -160,9 +161,6 @@ class PropertyChoice(forms.Form):
     opt9 = forms.CharField(max_length=100, required=False)
     opt10 = forms.CharField(max_length=100, required=False)
 
-class SpeciesSelector(forms.Form):
-    species = forms.ModelChoiceField(queryset=Species.objects.all(),required=True)
-
 class IndividualMain(forms.ModelForm):
     class Meta:
         model = Individual
@@ -176,7 +174,7 @@ class IndividualMain(forms.ModelForm):
     location = forms.CharField(max_length=100, required=True)
     subspecies = forms.ModelChoiceField(queryset=Subspecies.objects.all(), required=True)
 
-    date = forms.DateField(widget = forms.SelectDateWidget(),required=True)
+    date = forms.DateField(widget = forms.SelectDateWidget(years=range(1950, datetime.date.today().year)),required=True)
 
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -187,8 +185,6 @@ class IndividualMain(forms.ModelForm):
     parents = forms.ModelMultipleChoiceField(queryset=Individual.objects.all(), required=False)
 
     modify = forms.BooleanField(required=False,widget=forms.HiddenInput)
-
-    images = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': False}),required=False)
 
     def __init__(self, *args, **kwargs):
         species = kwargs.pop('species')
@@ -281,3 +277,4 @@ class SearchFormSet(BaseSearchFormSet):
     def get_form_kwargs(self, index):
         form_kwargs = super(SearchFormSet, self).get_form_kwargs(index)
         return form_kwargs
+

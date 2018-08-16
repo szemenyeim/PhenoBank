@@ -10,6 +10,12 @@ from django.dispatch import receiver
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
+def upl_file_name(instance, filename):
+    return '/'.join(['upload', str(instance.animal.ENAR), filename])
+
+def upl_file_name_spec(instance, filename):
+    return '/'.join(['upload', str(instance.name), filename])
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmed = models.BooleanField(default=False)
@@ -30,6 +36,7 @@ class Species(models.Model):
     Model representing a species.
     """
     name = models.CharField(max_length=200, help_text="Enter the species name")
+    image = models.ImageField('Image',upload_to=upl_file_name_spec, null=True)
 
     class Meta:
         ordering = ["name"]
@@ -127,9 +134,6 @@ class Option(models.Model):
         String for representing the Model object (in Admin site etc.)
         """
         return self.name
-
-def upl_file_name(instance, filename):
-    return '/'.join(['upload', str(instance.animal.ENAR), filename])
 
 class Individual(models.Model):
     """
