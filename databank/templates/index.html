@@ -1,15 +1,14 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<p>PhenBank</p>
 
   <p>Welcome to <em>PhenBank</em>, an online database for phenotypes.</p>
 
-<p>Database:</p>
+<b>Database:</b>
 
   <p>Our database currently has {{ num_phenomes }} phenomes of {{ num_species }} species.</p>
 
-<p>Species:</p>
+<b>Species:</b>
 
     {% if pk %}
         <p>Selected species: {{ name }}</p>

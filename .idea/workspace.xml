@@ -15,16 +15,17 @@
     <session id="1898647511">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="6" />
+          <entry key="project.closed" value="7" />
           <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.3" value="5" />
-          <entry key="project.opened" value="6" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="html" value="7" />
-          <entry key="py" value="3" />
+          <entry key="py" value="5" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
@@ -32,18 +33,18 @@
         <counts>
           <entry key="HTML" value="7" />
           <entry key="PLAIN_TEXT" value="1" />
-          <entry key="Python" value="3" />
+          <entry key="Python" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="102" />
+          <entry key="html" value="192" />
           <entry key="py" value="102" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="102" />
+          <entry key="HTML" value="192" />
           <entry key="Python" value="102" />
         </counts>
       </usages-collector>
@@ -54,26 +55,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/databank/templates/databank/search.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
+            <state relative-caret-position="646">
               <caret line="38" column="17" selection-start-line="38" selection-start-column="17" selection-end-line="38" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/databank/templates/base_generic.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="53" column="15" selection-start-line="53" selection-start-column="15" selection-end-line="53" selection-end-column="15" />
+            <state relative-caret-position="51">
+              <caret line="75" column="49" selection-start-line="75" selection-start-column="49" selection-end-line="75" selection-end-column="49" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/databank/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="24" lean-forward="true" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="24" />
+            <state relative-caret-position="34">
+              <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -222,8 +223,8 @@
         <option value="$PROJECT_DIR$/databank/urls.py" />
         <option value="$PROJECT_DIR$/databank/templates/databank/index.html" />
         <option value="$PROJECT_DIR$/PhenoBank/settings.py" />
-        <option value="$PROJECT_DIR$/databank/templates/index.html" />
         <option value="$PROJECT_DIR$/databank/templates/base_generic.html" />
+        <option value="$PROJECT_DIR$/databank/templates/index.html" />
       </list>
     </option>
   </component>
@@ -241,7 +242,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -276,6 +276,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -500,24 +501,10 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/requirements.txt" />
-    <entry file="file://$PROJECT_DIR$/PhenoBank/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="36" column="70" selection-start-line="36" selection-start-column="70" selection-end-line="36" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/databank/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1955">
           <caret line="134" selection-start-line="134" selection-end-line="134" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/databank/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="35" column="70" selection-start-line="35" selection-start-column="70" selection-end-line="35" selection-end-column="70" />
         </state>
       </provider>
     </entry>
@@ -544,7 +531,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/databank/templates/databank/search.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
+        <state relative-caret-position="646">
           <caret line="38" column="17" selection-start-line="38" selection-start-column="17" selection-end-line="38" selection-end-column="17" />
         </state>
       </provider>
@@ -593,17 +580,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/databank/templates/index.html">
+    <entry file="file://$PROJECT_DIR$/databank/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="24" lean-forward="true" selection-start-line="22" selection-start-column="24" selection-end-line="22" selection-end-column="24" />
+        <state relative-caret-position="476">
+          <caret line="35" column="70" selection-start-line="35" selection-start-column="70" selection-end-line="35" selection-end-column="70" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PhenoBank/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="498">
+          <caret line="36" column="70" selection-start-line="36" selection-start-column="70" selection-end-line="36" selection-end-column="70" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/databank/templates/base_generic.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="53" column="15" selection-start-line="53" selection-start-column="15" selection-end-line="53" selection-end-column="15" />
+        <state relative-caret-position="51">
+          <caret line="75" column="49" selection-start-line="75" selection-start-column="49" selection-end-line="75" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/databank/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="19" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
         </state>
       </provider>
     </entry>
