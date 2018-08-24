@@ -315,7 +315,6 @@ def model_form_upload(request, pk=None):
             image = form.save(commit=False)
             image.animal = animal
             image.save()
-            call_command('collectstatic', verbosity=0, interactive=False)
             return redirect(animal.get_absolute_url())
 
     return HttpResponseNotFound()
