@@ -168,7 +168,7 @@ class IndividualMain(forms.ModelForm):
 
     species = forms.ModelChoiceField(queryset=Species.objects.all(),required=False,widget=forms.HiddenInput)
 
-    ENAR = forms.CharField(max_length=10, required=True)
+    ENAR = forms.CharField(max_length=50, required=True)
     Name = forms.CharField(max_length=100, required=True)
 
     location = forms.CharField(max_length=100, required=True)
