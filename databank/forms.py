@@ -35,11 +35,11 @@ class PropertyForm(forms.ModelForm):
                     self.fields['textVal'] = forms.CharField(max_length=0, widget=NameOnlyWidget, required=False, label=name)
                     self.fields['numVal'] = forms.FloatField(widget=forms.HiddenInput, required=False)
                 elif _type == 'T':
-                    self.fields['textVal'] = forms.CharField(max_length=100, required=True, label=name)
+                    self.fields['textVal'] = forms.CharField(max_length=100, required=False, label=name)
                     self.fields['numVal'] = forms.FloatField(widget=forms.HiddenInput, required=False)
                 elif _type == 'F':
                     self.fields['textVal'] = forms.CharField(max_length=0,widget=forms.HiddenInput, required=False)
-                    self.fields['numVal'] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal, required=True, label=name)
+                    self.fields['numVal'] = forms.FloatField(max_value=property.maxVal, min_value=property.minVal, required=False, label=name)
                 elif _type == 'C':
                     options = Option.objects.filter(property=property)
                     choices = []
