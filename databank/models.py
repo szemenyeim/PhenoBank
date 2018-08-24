@@ -139,7 +139,7 @@ class Individual(models.Model):
     """
     Model representing a individual.
     """
-    ENAR = models.CharField('ENAR ID', max_length=10, help_text='ENAR ID')
+    ENAR = models.CharField('ENAR ID', max_length=50, help_text='ENAR ID')
     Name = models.CharField('Name', max_length=100, help_text='Name')
 
     location = models.CharField('location', max_length=100, null=True, help_text="Birth Location")
