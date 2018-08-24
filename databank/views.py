@@ -18,6 +18,8 @@ from django.core.files.storage import FileSystemStorage
 from .fileAgent import constructFile
 import json
 from django.db.models import Q
+from django.core.management import call_command
+
 # Create your views here.
 
 def index(request):
@@ -313,6 +315,7 @@ def model_form_upload(request, pk=None):
             image = form.save(commit=False)
             image.animal = animal
             image.save()
+            call_command('collectstatic', verbosity=0, interactive=False)
             return redirect(animal.get_absolute_url())
 
     return HttpResponseNotFound()
