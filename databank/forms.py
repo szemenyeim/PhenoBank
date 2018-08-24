@@ -98,7 +98,7 @@ class SignUpForm(UserCreationForm):
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
 
 class NameOnlyWidget(forms.Widget):
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         #super().render(name, value, attrs)
         flat_attrs = flatatt(attrs)
         html = '''

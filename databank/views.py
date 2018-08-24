@@ -168,13 +168,13 @@ class PropertyDetailView(generic.DetailView):
 
 def isNumber(wizard):
     # try to get the cleaned data of step 1
-    cleaned_data = wizard.get_cleaned_data_for_step('1') or {}
+    cleaned_data = wizard.get_cleaned_data_for_step('0') or {}
     # check if the property is a number
     return cleaned_data.get('type', True) == 'F'
 
 def isMulti(wizard):
     # try to get the cleaned data of step 1
-    cleaned_data = wizard.get_cleaned_data_for_step('1') or {}
+    cleaned_data = wizard.get_cleaned_data_for_step('0') or {}
     # check if the property is multiple choice
     return cleaned_data.get('type', True) == 'C'
 
