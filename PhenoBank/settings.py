@@ -46,7 +46,6 @@ if not DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -58,6 +57,7 @@ INSTALLED_APPS = [
     'captcha',
     'imagekit',
     'django_filters',
+    'django.contrib.admin',
 ]
 
 MIDDLEWARE = [
