@@ -151,7 +151,7 @@ class Individual(models.Model):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    sex = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
     parents = models.ManyToManyField('self', blank=True, related_name='children', symmetrical=False)
 

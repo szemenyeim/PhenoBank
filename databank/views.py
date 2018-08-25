@@ -112,7 +112,7 @@ def getAnimalsForProperties(form):
 def searchProperty(request,pk):
     property = get_object_or_404(Property_base,pk=pk)
     prop_children = property.get_descendants(include_self=True).filter(~Q(type='N'))
-    header = ['ENAR','Name','Location','Subspecies','Gender','Birt Date']
+    header = ['ENAR','Name','Location','Subspecies','Sex','Birt Date']
     initial = []
     propVals = []
     formErrors = []

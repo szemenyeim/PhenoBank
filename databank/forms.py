@@ -180,7 +180,7 @@ class IndividualMain(forms.ModelForm):
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    gender = forms.ChoiceField(choices=GENDER_CHOICES, required=True)
+    sex = forms.ChoiceField(choices=GENDER_CHOICES, required=True)
 
     parents = forms.ModelMultipleChoiceField(queryset=Individual.objects.all(), required=False)
 
@@ -209,8 +209,8 @@ class IndividualMain(forms.ModelForm):
         parents = self.cleaned_data['parents']
         if parents.count() > 2:
             raise ValidationError("You can select 2 parents at most")
-        if parents.count() == 2 and parents.first().gender == parents.last().gender:
-            raise ValidationError("Parents must be a different gender")
+        if parents.count() == 2 and parents.first().sex == parents.last().sex:
+            raise ValidationError("Parents must be a different sex")
         return parents
 
 class PropertySearchForm(forms.Form):

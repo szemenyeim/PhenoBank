@@ -14,7 +14,7 @@ class IndividualFilter(django_filters.FilterSet):
             'Name': 'Name',
             'Location': 'location',
             'Sub Species': 'subspecies',
-            'Gender': 'gender',
+            'Sex': 'sex',
             'Birth Date': 'date',
         },
         field_labels={
@@ -22,11 +22,11 @@ class IndividualFilter(django_filters.FilterSet):
             'Name': 'Name',
             'Location': 'Location',
             'Sub Species': 'Sub Species',
-            'Gender': 'Gender',
+            'Sex': 'Sex',
             'Birth Date': 'Birth Date',
         }
     )
 
     class Meta:
         model = Individual
-        fields = ['Name','ENAR','location','subspecies','gender']
+        fields = ['Name','ENAR','location','subspecies','sex']
