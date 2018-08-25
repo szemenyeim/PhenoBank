@@ -28,7 +28,7 @@ urlpatterns = [
     path('individuals/add_image/<pk>/', login_required(model_form_upload), name='individual-image-add'),
     path('delete-image/<pk>/', login_required(delete_image), name='delete_image'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(), {'next_page': ''}, name='logout'),
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>[0-9A-Za-z_\-]/<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20}/',
