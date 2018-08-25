@@ -379,8 +379,9 @@ def signup(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
-            
+
             user.is_active = True
+            user.save()
             user.profile.email_confirmed = True
             user.save()
             login(request, user)
