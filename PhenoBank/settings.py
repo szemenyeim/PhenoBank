@@ -29,7 +29,7 @@ except ImportError:
     from .secret_key import SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['152.66.240.18','deeplearning.iit.bme.hu','phenbank.eu','127.0.0.1']
 if not DEBUG:

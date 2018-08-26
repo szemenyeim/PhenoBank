@@ -1,12 +1,7 @@
 {% if property.parent.type != "N" %}
-  <tr>
-    <td>{{ property.parent.name }}</td>
-      <td>
     {% if property.parent.type == "F" %}
         {{ property.numVal }}
     {% else %}
         {{ property.textVal }}
     {% endif %}
-    </td>
-  </tr>
 {% endif %}

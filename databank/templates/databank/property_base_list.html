@@ -5,7 +5,7 @@
     <p>Please select a species or a property to search.</p>
 
     {% load mptt_tags %}
-    <ul>
+    <ul class="collapsibleList">
         {% recursetree property_base_list %}
             <li>
                 <a href="{{ node.get_absolute_url }}">{{ node }}</a>

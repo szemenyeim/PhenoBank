@@ -1,14 +1,48 @@
 {% extends "base_generic.html" %}
 {% block content %}
+<div id="parent">
+<div style="width: 50%; height: 50%; float:left;">
   <h1>{{ individual.Name }}</h1>
 
   <p><strong>ENAR ID:</strong> {{ individual.ENAR }}</p>
   <p><strong>Species:</strong> {{ individual.species }}</p>
   <p><strong>SubSpecies:</strong> {{ individual.subspecies }}</p>
-  <p><strong>Gender:</strong> {{ individual.gender }}</p>
+  <p><strong>Sex:</strong> {{ individual.gender }}</p>
   <p><strong>Location:</strong> {{ individual.location }}</p>
   <p><strong>Date:</strong> {{ individual.date }}</p>
 
+     {% load mptt_tags %}
+    {% load filter_extras %}
+            <ul class="collapsibleList">
+                {% recursetree property_base_list %}
+                    <li>
+                        {{ node }} : {% include "databank/property.html" with property=individual.properties|has_parent:node %}
+                        {% if not node.is_leaf_node %}
+                            <ul class="children">
+                                {{ children }}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endrecursetree %}
+            </ul>
+
+<p>
+<form action="{{ individual.get_edit_url }}">
+    <input type="submit" value="Modify" />
+</form></p>
+
+<p>
+    <div class="dropdown">
+      <button class="dropbtn">Download</button>
+      <div class="dropdown-content">
+        <a href="{{ individual.get_download_url_xls }}">XLS</a>
+        <a href="{{ individual.get_download_url_xml }}">XML</a>
+      </div>
+    </div>
+    </p>
+
+</div>
+<div style="width: 50%; height: 50%; float:right;">
   <p><strong>Images:</strong></p>
   {% for img in individual.images.all %}
     {% load imagekit %}
@@ -23,28 +57,8 @@
     <button type="submit">Upload</button>
   </form></p>
 
-  <p><strong>Properties:</strong></p>
-    <table style="width:100%">
-      <tr>
-        <th>Property</th>
-        <th>Value</th>
-      </tr>
-      {% for prop in individual.properties.all %}
-          {% include "databank/property.html" with property=prop %}
-      {% endfor %}
-
-    </table>
-
-<p>
-<form action="{{ individual.get_edit_url }}">
-    <input type="submit" value="Modify" />
-</form></p>
-
-<p>
-<form action="{{ individual.get_download_url }}">
-    <input type="submit" value="Download" />
-</form></p>
-
+</div>
+<div class="family">
   <p><strong>Family:</strong></p>
 
     <div id="chart"></div>
@@ -238,4 +252,6 @@
 
     </script>
 
+</div>
+</div>
 {% endblock %}

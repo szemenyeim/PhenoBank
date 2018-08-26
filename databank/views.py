@@ -22,6 +22,7 @@ from django.core.management import call_command
 
 # Create your views here.
 
+
 def index(request):
     """
     View function for home page of site.
@@ -147,7 +148,7 @@ class IndividualDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         form = ImageForm()
-        extra_context = {'form': form}
+        extra_context = {'form': form, 'property_base_list':Property_base.objects.filter(species=self.request.session.get('species'))}
         context = super(IndividualDetailView, self).get_context_data(**kwargs)
         context.update(extra_context)
         animal = context['individual']
@@ -319,7 +320,7 @@ def model_form_upload(request, pk=None):
 
     return HttpResponseNotFound()
 
-def animal_download(request, pk=None):
+def animal_download(request, pk=None, format=None):
     if request.method == 'GET':
         animal = None
         query = Individual.objects.filter(ID=pk)
@@ -328,7 +329,10 @@ def animal_download(request, pk=None):
         if animal is None:
             return HttpResponseNotFound()
 
-        fileName = animal.ENAR + ".xls"
+        if not format:
+            format = "xls"
+
+        fileName = animal.ENAR + "." + format
         filePath = os.path.join(settings.MEDIA_ROOT,fileName)
         fileURL = os.path.join(settings.MEDIA_URL,fileName)
         constructFile(filePath,animal)

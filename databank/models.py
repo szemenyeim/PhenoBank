@@ -92,7 +92,7 @@ class Property_base(MPTTModel):
         """
         String for representing the Model object (in Admin site etc.)
         """
-        return self.name if self.parent else self.species.__str__()
+        return self.name if self.parent else "Properties"
 
 
     def get_absolute_url(self):
@@ -187,11 +187,17 @@ class Individual(models.Model):
         """
         return reverse('individual-edit', args=[str(self.ID)])
 
-    def get_download_url(self):
+    def get_download_url_xls(self):
         """
         Returns the url to access a detail record for this book.
         """
-        return reverse('individual-download', args=[str(self.ID)])
+        return reverse('individual-download', args=[str(self.ID), 'xls'])
+
+    def get_download_url_xml(self):
+        """
+        Returns the url to access a detail record for this book.
+        """
+        return reverse('individual-download', args=[str(self.ID), 'xml'])
 
 
 class Image(models.Model):

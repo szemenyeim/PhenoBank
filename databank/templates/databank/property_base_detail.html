@@ -6,7 +6,7 @@
              <p>To search based on a specific property and its children, please, click on the property, then click search.</p>
 
             {% load mptt_tags %}
-            <ul>
+            <ul class="collapsibleList">
                 {% recursetree property_base_list %}
                     <li>
                         <a href="{{ node.get_absolute_url }}">{{ node }}</a>
