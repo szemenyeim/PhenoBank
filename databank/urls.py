@@ -2,7 +2,7 @@ from django.urls import path, include
 from . import views
 from django.contrib.auth import views as auth_views
 from .forms import PropertyMain, PropertyChoice, PropertyNumeric, IndividualMain, PropertyFormSet
-from .views import PropertyWizard, isNumber, isMulti, IndividualWizard, model_form_upload, delete_image, animal_download, property_delete, searchProperty, individual_list
+from .views import PropertyWizard, isNumber, isMulti, IndividualWizard, model_form_upload, delete_image, animal_download, property_delete, searchProperty, privacy, individual_list
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django_filters.views import FilterView
@@ -19,6 +19,7 @@ urlpatterns = [
     path('properties/', login_required(views.PropertyListView.as_view()), name='properties'),
     path('property/<pk>/', login_required(views.PropertyDetailView.as_view()), name='property-detail'),
     path('search/<pk>/', login_required(searchProperty), name='search'),
+    path('privacy/', privacy, name='privacy'),
     path('property/delete/<pk>/', login_required(property_delete), name='property-delete'),
     path('properties/new/', staff_member_required(PropertyWizard.as_view(property_forms,
         condition_dict={'1': isMulti, '2': isNumber}

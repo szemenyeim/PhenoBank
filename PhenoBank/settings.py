@@ -29,7 +29,7 @@ except ImportError:
     from .secret_key import SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['152.66.240.18','deeplearning.iit.bme.hu','phenbank.eu','127.0.0.1']
 if not DEBUG:
@@ -140,8 +140,8 @@ LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'szemenyeim@gmail.com'
+EMAIL_HOST = 'smtp.forpsi.com'
+EMAIL_HOST_USER = 'admin@phenbank.eu'
 EMAIL_HOST_PASSWORD = '' #Check the update part
 EMAIL_PORT = 587
 

@@ -302,6 +302,9 @@ class IndividualWizard(SessionWizardView):
         prefix = "../../../" if self.isModify() else "../../"
         return HttpResponseRedirect(prefix + "individuals")
 
+def privacy(request):
+    return render(request, 'databank/privacy.html')
+
 def model_form_upload(request, pk=None):
     if request.method == 'POST':
         animal = None
