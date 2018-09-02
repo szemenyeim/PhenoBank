@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ac17757f-263f-42cc-8c57-eba2e9a66c86" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PhenoBank/key" beforeDir="false" afterPath="$PROJECT_DIR$/PhenoBank/key" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PhenoBank/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/PhenoBank/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/databank/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/databank/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,41 +15,41 @@
     <session id="1898647511">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="29" />
+          <entry key="project.closed" value="30" />
           <entry key="project.open.time.1" value="1" />
-          <entry key="project.open.time.2" value="15" />
+          <entry key="project.open.time.2" value="16" />
           <entry key="project.open.time.3" value="12" />
           <entry key="project.open.time.7" value="1" />
-          <entry key="project.opened" value="29" />
+          <entry key="project.opened" value="30" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="html" value="23" />
+          <entry key="html" value="24" />
           <entry key="js" value="1" />
-          <entry key="key" value="1" />
-          <entry key="py" value="20" />
+          <entry key="key" value="2" />
+          <entry key="py" value="23" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="23" />
+          <entry key="HTML" value="24" />
           <entry key="JavaScript" value="1" />
-          <entry key="PLAIN_TEXT" value="2" />
-          <entry key="Python" value="20" />
+          <entry key="PLAIN_TEXT" value="3" />
+          <entry key="Python" value="23" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="html" value="1048" />
-          <entry key="py" value="1388" />
+          <entry key="py" value="1421" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="1048" />
-          <entry key="Python" value="1388" />
+          <entry key="Python" value="1421" />
         </counts>
       </usages-collector>
     </session>
@@ -60,8 +59,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PhenoBank/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="143" column="29" selection-start-line="143" selection-start-column="29" selection-end-line="143" selection-end-column="29" />
+            <state relative-caret-position="373">
+              <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
               <folding>
                 <element signature="e#310#319#0" expanded="true" />
               </folding>
@@ -81,10 +80,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/databank/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4913">
-              <caret line="309" column="21" selection-start-line="309" selection-start-column="21" selection-end-line="309" selection-end-column="21" />
+            <state relative-caret-position="322">
+              <caret line="397" column="41" selection-start-line="397" selection-start-column="41" selection-end-line="397" selection-end-column="41" />
               <folding>
-                <marker date="1535725332875" expanded="true" signature="11400:11454" ph="..." />
+                <marker date="1535869257435" expanded="true" signature="11400:11454" ph="..." />
               </folding>
             </state>
           </provider>
@@ -231,11 +230,11 @@
         <option value="$PROJECT_DIR$/databank/fileAgent.py" />
         <option value="$PROJECT_DIR$/databank/models.py" />
         <option value="$PROJECT_DIR$/databank/urls.py" />
-        <option value="$PROJECT_DIR$/databank/views.py" />
         <option value="$PROJECT_DIR$/databank/templates/databank/privacy.html" />
         <option value="$PROJECT_DIR$/databank/templates/base_generic.html" />
-        <option value="$PROJECT_DIR$/PhenoBank/settings.py" />
         <option value="$PROJECT_DIR$/PhenoBank/key" />
+        <option value="$PROJECT_DIR$/databank/views.py" />
+        <option value="$PROJECT_DIR$/PhenoBank/settings.py" />
       </list>
     </option>
   </component>
@@ -253,7 +252,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -294,6 +292,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -367,15 +366,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/databank/static/css/styles.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="1" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.1/system/python_stubs/-313451744/builtins.py" />
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/django/forms/models.py" />
     <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/formtools/wizard/views.py" />
     <entry file="file://$PROJECT_DIR$/databank/storage.py" />
     <entry file="file://$PROJECT_DIR$/databank/templates/databank/individual_list.html" />
@@ -575,16 +565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/databank/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4913">
-          <caret line="309" column="21" selection-start-line="309" selection-start-column="21" selection-end-line="309" selection-end-column="21" />
-          <folding>
-            <marker date="1535725332875" expanded="true" signature="11400:11454" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/databank/urls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -625,14 +605,41 @@
     <entry file="file://$PROJECT_DIR$/PhenoBank/key">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="10" selection-start-column="10" selection-end-column="10" />
+          <caret column="10" lean-forward="true" selection-start-column="10" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/Lib/site-packages/django/core/mail/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="52">
+          <caret line="37" column="4" selection-start-line="37" selection-start-column="4" selection-end-line="37" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Continuum/anaconda3/Lib/site-packages/django/contrib/auth/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="35">
+          <caret line="350" column="8" selection-start-line="350" selection-start-column="8" selection-end-line="350" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/databank/templates/databank/account_activation_email.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/databank/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="397" column="41" selection-start-line="397" selection-start-column="41" selection-end-line="397" selection-end-column="41" />
+          <folding>
+            <marker date="1535869257435" expanded="true" signature="11400:11454" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PhenoBank/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="143" column="29" selection-start-line="143" selection-start-column="29" selection-end-line="143" selection-end-column="29" />
+        <state relative-caret-position="373">
+          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
           <folding>
             <element signature="e#310#319#0" expanded="true" />
           </folding>

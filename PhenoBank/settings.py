@@ -144,6 +144,7 @@ EMAIL_HOST = 'smtp.forpsi.com'
 EMAIL_HOST_USER = 'postmaster@phenbank.eu'
 EMAIL_HOST_PASSWORD = '' #Check the update part
 EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 fname = "./PhenoBank/key"
 try:

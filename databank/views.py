@@ -387,15 +387,15 @@ def signup(request):
             user = form.save(commit=False)
             user.is_active = False
 
-            user.is_active = True
+            '''user.is_active = True
             user.save()
             user.profile.email_confirmed = True
             user.save()
             login(request, user)
-            return redirect('index')
-            '''user.save()
+            return redirect('index')'''
+            user.save()
             current_site = get_current_site(request)
-            subject = 'Activate Your PhenoBank Account'
+            subject = 'Activate Your PhenBank Account'
             message = render_to_string('databank/account_activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
@@ -403,7 +403,7 @@ def signup(request):
                 'token': account_activation_token.make_token(user),
             })
             user.email_user(subject, message)
-            return redirect('account_activation_sent')'''
+            return redirect('account_activation_sent')
     else:
         form = SignUpForm()
     return render(request, 'databank/signup.html', {'form': form})
