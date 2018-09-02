@@ -141,7 +141,7 @@ LOGIN_URL = 'login'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.forpsi.com'
-EMAIL_HOST_USER = 'admin@phenbank.eu'
+EMAIL_HOST_USER = 'postmaster@phenbank.eu'
 EMAIL_HOST_PASSWORD = '' #Check the update part
 EMAIL_PORT = 587
 
