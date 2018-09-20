@@ -1518,3 +1518,8 @@
 [Thu Aug 16 09:54:18.207414 2018] [wsgi:error] [pid 19704:tid 140543862462208] [client 95.85.194.68:56087] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
 [Thu Aug 16 10:01:42.846264 2018] [wsgi:error] [pid 19704:tid 140543854069504] [client 46.150.77.19:56630] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
 [Thu Aug 16 10:18:21.310265 2018] [wsgi:error] [pid 19704:tid 140543837284096] [client 91.244.123.33:28619] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
+[Thu Aug 16 10:33:18.358126 2018] [wsgi:error] [pid 19704:tid 140543820498688] [client 54.176.129.156:56582] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
+[Thu Aug 16 10:33:34.160603 2018] [wsgi:error] [pid 19704:tid 140543812105984] [client 54.176.129.156:57568] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
+[Thu Aug 16 10:45:19.554277 2018] [wsgi:error] [pid 19705:tid 140543879247616] [client 200.233.193.241:59850] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
+[Thu Aug 16 10:46:51.900492 2018] [wsgi:error] [pid 19704:tid 140543803713280] [client 86.59.253.157:3624] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
+[Thu Aug 16 10:49:25.230223 2018] [wsgi:error] [pid 19705:tid 140543870854912] [client 86.59.253.157:3652] Timeout when reading response headers from daemon process 'PhenoBank': /home/admin/PhenoBank/PhenoBank/wsgi.py
