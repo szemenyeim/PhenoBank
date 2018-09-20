@@ -18,5 +18,5 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "PhenoBank.settings")
 application = get_wsgi_application()
 application = WhiteNoise(application)
 #'C:/Users/szeme/Documents/Website/PhenoBank/CACHE','/home/admin/PhenoBank/CACHE'
-application.add_files('/home/admin/PhenoBank/CACHE', '/CACHE')
-application.add_files('/home/admin/PhenoBank/CACHE/upload', '/upload')
+application.add_files('/home/root/PhenoBank/CACHE', '/CACHE')
+application.add_files('/home/root/PhenoBank/CACHE/upload', '/upload')
